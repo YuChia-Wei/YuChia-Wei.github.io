@@ -1,0 +1,752 @@
+<!doctype html><html lang=zh-TW><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>ArgoCD 安裝筆記 - -小佑-（&lt;ゝω·）キラbosh☆</title><meta name=Description content="ArgoCD 安裝筆記"><meta property="og:title" content="ArgoCD 安裝筆記">
+<meta property="og:description" content="ArgoCD 安裝筆記"><meta property="og:type" content="article"><meta property="og:url" content="https://yuchia-wei.github.io/2022/04/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98/"><meta property="og:image" content="https://yuchia-wei.github.io/images/avatar.jpg"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-04-04T00:00:00+00:00"><meta property="article:modified_time" content="2023-11-19T21:13:04+08:00"><meta property="og:site_name" content="-小佑-（<ゝω·）キラbosh☆"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yuchia-wei.github.io/images/avatar.jpg"><meta name=twitter:title content="ArgoCD 安裝筆記"><meta name=twitter:description content="ArgoCD 安裝筆記"><meta name=application-name content="-小佑-（<ゝω·）キラbosh☆"><meta name=apple-mobile-web-app-title content="-小佑-（<ゝω·）キラbosh☆"><meta name=theme-color content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=https://yuchia-wei.github.io/favicon.ico><link rel=icon type=image/png sizes=32x32 href=https://yuchia-wei.github.io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://yuchia-wei.github.io/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=https://yuchia-wei.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yuchia-wei.github.io/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://yuchia-wei.github.io/2022/04/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98/><link rel=prev href=https://yuchia-wei.github.io/2022/04/%E4%BD%BF%E7%94%A8-argocd-%E5%BB%BA%E7%AB%8B-kubernetes-%E5%9F%BA%E7%A4%8E%E5%BB%BA%E8%A8%AD/><link rel=next href=https://yuchia-wei.github.io/2022/04/kubernetes-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98-part.1-%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99/><link rel=stylesheet href=https://yuchia-wei.github.io/css/main.css><link rel=stylesheet href=https://yuchia-wei.github.io/lib/normalize/normalize.min.css><link rel=stylesheet href=https://yuchia-wei.github.io/css/color.css><link rel=stylesheet href=https://yuchia-wei.github.io/css/style.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=https://yuchia-wei.github.io/lib/fontawesome-free/all.min.css><noscript><link rel=stylesheet href=https://yuchia-wei.github.io/lib/fontawesome-free/all.min.css></noscript><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=https://yuchia-wei.github.io/lib/animate/animate.min.css><noscript><link rel=stylesheet href=https://yuchia-wei.github.io/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"ArgoCD 安裝筆記","inLanguage":"zh-TW","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/yuchia-wei.github.io\/2022\/04\/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98\/"},"image":["https:\/\/yuchia-wei.github.io\/images\/Apple-Devices-Preview.png"],"genre":"posts","keywords":"Install","wordcount":2369,"url":"https:\/\/yuchia-wei.github.io\/2022\/04\/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98\/","datePublished":"2022-04-04T00:00:00+00:00","dateModified":"2023-11-19T21:13:04+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"YuChia, Wei","logo":{"@type":"ImageObject","url":"https:\/\/yuchia-wei.github.io\/images\/avatar.jpg","width":280,"height":270}},"author":{"@type":"Person","name":"YuChia Wei"},"description":"ArgoCD 安裝筆記"}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>function setTheme(e){document.body.setAttribute("theme",e),document.documentElement.style.setProperty("color-scheme",e==="light"?"light":"dark"),window.theme=e,window.isDark=window.theme!=="light"}function saveTheme(e){window.localStorage&&localStorage.setItem("theme",e)}function getMeta(e){const t=document.getElementsByTagName("meta");for(let n=0;n<t.length;n++)if(t[n].getAttribute("name")===e)return t[n];return""}if(window.localStorage&&localStorage.getItem("theme")){let e=localStorage.getItem("theme");e==="light"||e==="dark"||e==="black"?setTheme(e):setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}else"auto"==="light"||"auto"==="dark"||"auto"==="black"?(setTheme("auto"),saveTheme("auto")):(saveTheme("auto"),setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));let metaColors={light:"#f8f8f8",dark:"#252627",black:"#000000"};getMeta("theme-color").content=metaColors[document.body.getAttribute("theme")],window.switchThemeEventSet=new Set</script><div id=back-to-top></div><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://yuchia-wei.github.io/ title="-小佑-（<ゝω·）キラbosh☆"><span class=header-title-pre><i class='far fa-edit fa-fw'></i></span><span id=desktop-header-typeit class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://yuchia-wei.github.io/posts/>文章 </a><a class=menu-item href=https://yuchia-wei.github.io/tags/>標籤 </a><a class=menu-item href=https://yuchia-wei.github.io/categories/>分類 </a><a class=menu-item href=https://yuchia-wei.github.io/series/>系列文 </a><a class=menu-item href=https://yuchia-wei.github.io/authors/>作者 </a><a class=menu-item href=https://yuchia-wei.github.io/showcase/>作品 </a><a class=menu-item href=https://yuchia-wei.github.io/categories/documentation/>文件 </a><a class=menu-item href=https://yuchia-wei.github.io/about/>關於 </a><a class=menu-item href=https://github.com/YuChia-Wei title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw'></i> </a><a class=menu-item href=https://www.linkedin.com/in/yuchia-wei/ title=LinkedIn rel="noopener noreferrer" target=_blank><i class='fab fa-linkedin fa-fw'></i> </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item language" title=選擇語言>繁體中文 (臺灣)<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title=選擇語言 id=language-select-desktop onchange="location=this.value"><option value=/2022/04/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98/ selected>繁體中文 (臺灣)</option></select>
+</a><a href=javascript:void(0); class="menu-item theme-select" title=切換主題><i class="fas fa-adjust fa-fw"></i>
+<select class=color-theme-select id=theme-select-desktop title=切換主題><option value=light></option><option value=dark></option><option value=black></option><option value=auto></option></select></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://yuchia-wei.github.io/ title="-小佑-（<ゝω·）キラbosh☆"><span class=header-title-pre><i class='far fa-edit fa-fw'></i></span><span id=mobile-header-typeit class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><a class=menu-item href=https://yuchia-wei.github.io/posts/ title>文章</a><a class=menu-item href=https://yuchia-wei.github.io/tags/ title>標籤</a><a class=menu-item href=https://yuchia-wei.github.io/categories/ title>分類</a><a class=menu-item href=https://yuchia-wei.github.io/series/ title>系列文</a><a class=menu-item href=https://yuchia-wei.github.io/authors/ title>作者</a><a class=menu-item href=https://yuchia-wei.github.io/showcase/ title>作品</a><a class=menu-item href=https://yuchia-wei.github.io/categories/documentation/ title>文件</a><a class=menu-item href=https://yuchia-wei.github.io/about/ title>關於</a><a class=menu-item href=https://github.com/YuChia-Wei title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw'></i></a><a class=menu-item href=https://www.linkedin.com/in/yuchia-wei/ title=LinkedIn rel="noopener noreferrer" target=_blank><i class='fab fa-linkedin fa-fw'></i></a><a href=javascript:void(0); class="menu-item theme-select" title=切換主題>
+<i class="fas fa-adjust fa-fw"></i>
+<select class=color-theme-select id=theme-select-mobile title=切換主題><option value=light></option><option value=dark></option><option value=black></option><option value=auto></option></select>
+</a><a href=javascript:void(0); class=menu-item title=選擇語言>繁體中文 (臺灣)<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title=選擇語言 onchange="location=this.value"><option value=/2022/04/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98/ selected>繁體中文 (臺灣)</option></select></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目錄</h2><div class=toc-content id=toc-content-auto><nav id=TableOfContents><ul><li><a href=#manual-install>Manual Install</a></li><li><a href=#helm-install>Helm Install</a></li><li><a href=#ingress-install>Ingress Install</a><ul><li><a href=#use-specific-argocd-domain>Use Specific ArgoCD Domain</a></li><li><a href=#use-relative-argocd-path>Use Relative ArgoCD Path</a></li></ul></li><li><a href=#kustomization-install-with-istio-recommend-when-use-istio>kustomization Install With Istio (Recommend when use istio)</a></li></ul><ul><li><a href=#install---linux>Install - Linux</a></li></ul><ul><li><a href=#remote-cluster>Remote Cluster</a></li><li><a href=#user>User</a></li></ul><ul><li><a href=#core-install>Core Install</a></li><li><a href=#rollout-extension-install>Rollout-extension install</a></li></ul></nav></div></div><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC","true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">ArgoCD 安裝筆記</h1><div class=post-meta><div class=post-meta-line><span class=post-author><span class="author fas fa-user-circle fa-fw"></span><a href=https://github.com/yuchia-wei title=Author target=_blank rel="noopener noreferrer author" class=author>YuChia Wei</a>
+</span>&nbsp;<span class=post-category></span>&nbsp;<span class=post-category>收錄於 <a href=https://yuchia-wei.github.io/categories/argocd/><i class="far fa-folder fa-fw"></i>ArgoCD</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2022-04-04>2022-04-04</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime=2023-11-19>2023-11-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;約 2369 字&nbsp;<i class="far fa-clock fa-fw"></i>&nbsp;預計閱讀 5 分鐘&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目錄</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#manual-install>Manual Install</a></li><li><a href=#helm-install>Helm Install</a></li><li><a href=#ingress-install>Ingress Install</a><ul><li><a href=#use-specific-argocd-domain>Use Specific ArgoCD Domain</a></li><li><a href=#use-relative-argocd-path>Use Relative ArgoCD Path</a></li></ul></li><li><a href=#kustomization-install-with-istio-recommend-when-use-istio>kustomization Install With Istio (Recommend when use istio)</a></li></ul><ul><li><a href=#install---linux>Install - Linux</a></li></ul><ul><li><a href=#remote-cluster>Remote Cluster</a></li><li><a href=#user>User</a></li></ul><ul><li><a href=#core-install>Core Install</a></li><li><a href=#rollout-extension-install>Rollout-extension install</a></li></ul></nav></div></div><div class=content id=content><p>Argo CD 安裝的紀錄</p><div class="details admonition warning open"><div class="details-summary admonition-title"><i class="icon fas fa-exclamation-triangle fa-fw"></i>警告<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>新版安裝資料待整理，本文版本為 ver 2.2.1</div></div></div><h1 id=argocd-install-memo class=headerLink><a href=#argocd-install-memo class=header-mark></a>ArgoCD Install Memo</h1><h2 id=manual-install class=headerLink><a href=#manual-install class=header-mark></a>1 Manual Install</h2><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>Kubernetes with Istio 的環境下建議參照 <a href=#kustomization-Install-With-Istio rel>kustomization install</a> 的方式進行安裝</div></div></div><ol><li><p>download install yaml (option)</p><ul><li>指定版本<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl> curl -sSL https://raw.githubusercontent.com/argoproj/argo-cd/v2.2.1/manifests/install.yaml -o install-2.2.1.yaml
+</span></span></code></pre></td></tr></table></div></div></li><li>最新版本<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl> curl -sSL https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml -o install-latest.yaml
+</span></span></code></pre></td></tr></table></div></div></li></ul></li><li><p>建立 namespace</p><ul><li>純建立<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl create namespace argocd
+</span></span></code></pre></td></tr></table></div></div></li><li>含設定 istio 掛車<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl create namespace argocd
+</span></span><span class=line><span class=cl>kubectl label namespace argocd istio-injection<span class=o>=</span>enabled --overwrite
+</span></span></code></pre></td></tr></table></div></div></li></ul></li><li><p>Install to K8s</p><ul><li>使用下載版 (指定版本)<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply -n argocd -f install-2.2.1.yaml
+</span></span></code></pre></td></tr></table></div></div></li><li>使用下載版 (最新版本)<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply -n argocd -f install-latest.yaml
+</span></span></code></pre></td></tr></table></div></div></li><li>使用線上指定版<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.2.1/manifests/install.yaml
+</span></span></code></pre></td></tr></table></div></div></li><li>使用線上最新版<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+</span></span></code></pre></td></tr></table></div></div></li></ul></li><li><p>Install Argo Cli (option)</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+</span></span><span class=line><span class=cl>chmod +x /usr/local/bin/argocd
+</span></span></code></pre></td></tr></table></div></div></li><li><p>Fix Https Problam</p><p><a href=https://github.com/speedwing/eks-argocd-bootstrap/blob/master/argocd-bootstrap/argocd-istio-bootstrap/argocd-server.yaml target=_blank rel="noopener noreferrer">Reference</a></p><ul><li>編輯發布設定<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl edit deploy argocd-server -n argocd
+</span></span></code></pre></td></tr></table></div></div></li><li>找到 spec.containers.command 區段並加入以下內容<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>containers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>command</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>argocd-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 加入以下五行，使用 http 連線</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- --<span class=l>staticassets</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>/shared/app</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- --<span class=l>repo-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>argocd-repo-server:8081</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- --<span class=l>insecure</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li><li>重新佈署<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl rollout restart deploy -n argocd
+</span></span></code></pre></td></tr></table></div></div></li></ul></li></ol><h2 id=helm-install class=headerLink><a href=#helm-install class=header-mark></a>2 Helm Install</h2><p><a href=https://github.com/argoproj/argo-helm/tree/master/charts/argo-cd target=_blank rel="noopener noreferrer">Official Argo CD Helm Readme</a></p><p>重要：安裝時設定 server.extraArgs={&ndash;insecure} 來避開 TLS 憑證，如果要使用 TLS 憑證的話要多一些憑證設定，這邊先略過</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>helm repo add argo https://argoproj.github.io/argo-helm
+</span></span><span class=line><span class=cl>helm install argocd argo/argo-cd -n argocd
+</span></span><span class=line><span class=cl>kubectl create namespace argocd
+</span></span><span class=line><span class=cl>kubectl label namespace argocd istio-injection<span class=o>=</span>enabled --overwrite
+</span></span><span class=line><span class=cl>helm install argocd argo/argo-cd -n argocd --set server.extraArgs<span class=o>={</span>--insecure<span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=ingress-install class=headerLink><a href=#ingress-install class=header-mark></a>3 Ingress Install</h2><h3 id=use-specific-argocd-domain class=headerLink><a href=#use-specific-argocd-domain class=header-mark></a>3.1 Use Specific ArgoCD Domain</h3><ol><li><p>nginx Ingress</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.k8s.io/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Ingress</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server-ingress</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>annotations</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># kubernetes.io/ingress.class: nginx</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># nginx.ingress.kubernetes.io/force-ssl-redirect: &#34;true&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># nginx.ingress.kubernetes.io/ssl-passthrough: &#34;true&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ingressClassName</span><span class=p>:</span><span class=w> </span><span class=l>nginx</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>rules</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=l>argocd.&lt;domain&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>http</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>paths</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>pathType</span><span class=p>:</span><span class=w> </span><span class=l>Prefix</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>path</span><span class=p>:</span><span class=w> </span><span class=l>/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>backend</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>service</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>port</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=nt>number</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li><li><p>Istio Ingress</p><p><a href=https://github.com/speedwing/eks-argocd-bootstrap/blob/master/applications/argocd-istio-app/templates/istio-resources.yaml target=_blank rel="noopener noreferrer">Reference</a></p><ul><li>Gateway yaml<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.istio.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Gateway</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-gateway</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>selector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>istio</span><span class=p>:</span><span class=w> </span><span class=l>ingressgateway</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>servers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>hosts</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>argocd.&lt;domain&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>port</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>http</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># port 要用 ingressgateway 中，port = 80 的那組設定的 TargetPort</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>number</span><span class=p>:</span><span class=w> </span><span class=m>8080</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>HTTP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c># 如果要強轉 HTTPS</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c># tls:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c>#   httpsRedirect: true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>hosts</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 這邊這樣設定只是想讓 istio 不會跳相同 host 的警告</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>argocd/argocd.&lt;domain&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>port</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>https</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># port 要用 ingressgateway 中，port = 443 的那組設定的 TargetPort</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>number</span><span class=p>:</span><span class=w> </span><span class=m>8443</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>HTTPS</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tls</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>mode</span><span class=p>:</span><span class=w> </span><span class=l>PASSTHROUGH</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c># 另外的設定方法，待測試</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c># tls:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c>#   credentialName: argocd-server-tls # argocd server 會自動讀取這個名稱的 k8s secrets</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c>#   mode: SIMPLE</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li><li>VirtualService yaml<div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content><pre><code>    含有 https 導流的設定方式要研究一下
+</code></pre></div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.istio.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>VirtualService</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-vs</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>hosts</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>argocd.&lt;domain&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>gateways</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>argocd-gateway</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>http</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>route</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>destination</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server.argocd.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>port</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>number</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li></ul></li></ol><h3 id=use-relative-argocd-path class=headerLink><a href=#use-relative-argocd-path class=header-mark></a>3.2 Use Relative ArgoCD Path</h3><div class="details admonition warning open"><div class="details-summary admonition-title"><i class="icon fas fa-exclamation-triangle fa-fw"></i>警告<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>暫時測不到 <code>&lt;domain>/argocd/</code> 這種相對路徑的 URL 設定</div></div></div><ol><li><p>nginx Ingress</p><p><strong>待補</strong></p></li><li><p>Istio Ingress</p><ul><li>Gateway yaml<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.istio.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Gateway</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-gateway</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>selector</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>istio</span><span class=p>:</span><span class=w> </span><span class=l>ingressgateway</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>servers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>hosts</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>&lt;domain&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>port</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>http</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># port 要用 ingressgateway 中，port = 80 的那組設定的 TargetPort</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>number</span><span class=p>:</span><span class=w> </span><span class=m>8080</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>HTTP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c># 如果要強轉 HTTPS</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c># tls:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c>#   httpsRedirect: true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>hosts</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 這邊這樣設定只是想讓 istio 不會跳相同 host 的警告</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>argocd/&lt;domain&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>port</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>https</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># port 要用 ingressgateway 中，port = 443 的那組設定的 TargetPort</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>number</span><span class=p>:</span><span class=w> </span><span class=m>443</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>HTTPS</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>tls</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>mode</span><span class=p>:</span><span class=w> </span><span class=l>PASSTHROUGH</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c># 另外的設定方法，待測試</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c># tls:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c>#   credentialName: argocd-server-tls # argocd server 會自動讀取這個名稱的 k8s secrets</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=c>#   mode: SIMPLE</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li><li>VirtualService yaml<div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content><pre><code>    含有 https 導流的設定方式要研究一下
+</code></pre></div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>networking.istio.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>VirtualService</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-vs</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>hosts</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>&lt;domain&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>gateways</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>argocd-gateway</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>http</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>route</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>destination</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>host</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server.argocd.svc.cluster.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>port</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>number</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li></ul></li></ol><h2 id=kustomization-install-with-istio-recommend-when-use-istio class=headerLink><a href=#kustomization-install-with-istio-recommend-when-use-istio class=header-mark></a>4 kustomization Install With Istio (Recommend when use istio)</h2><p>此方法主要參考以下三個連結</p><ul><li><a href=https://loadbalancing.se/2021/03/22/argocd-behind-istio-on-rancher/ target=_blank rel="noopener noreferrer">說明文件</a></li><li><a href=https://github.com/argoproj/argo-cd/issues/2784 target=_blank rel="noopener noreferrer">官方 issues</a></li><li><a href=https://github.com/epacke/argo-istio target=_blank rel="noopener noreferrer">第三方的主要 GitRepo</a></li></ul><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>這邊的 kustomization yaml 同時設定了 <a href=https://github.com/argoproj-labs/argocd-extensions target=_blank rel="noopener noreferrer">argoproj-lab</a> 的擴充</div></div></div><ol><li><p>預先準備</p><ul><li>依據 <a href=#Manual-Command-Install rel>Manual Command Install</a> 章節準備好官方 ArgoCD 安裝 Yaml 與 Kubernetes Namespace</li><li>依據 <a href=#Ingress-Install rel>Ingress Install</a> 章節準備好 Istio 使用的 VisualService 與 Gateway</li></ul></li><li><p>準備 kustomization yaml</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>kustomize.config.k8s.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Kustomization</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>resources</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>install-2.2.1.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>VirtualService.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>Gateway.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>patchesStrategicMerge</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>istio_patches.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>components</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># extensions controller component</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>https://github.com/argoproj-labs/argocd-extensions/manifests</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li><li><p>準備 istio patch yaml</p><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content><pre><code>這邊準備的 yaml 除了預先設定排除 https 之外，就是要設定每個部屬出去的組件的版本號與應用程式名稱，以便 Istio 可以正確追蹤；在使用 [Manual Command Install](#Manual-Command-Install) + [Ingress Install](#Ingress-Install) 的方式安裝時，Istio 會發出因為沒有版本號與應用程式的 Label 而無法追蹤的錯誤。
+</code></pre></div></div></div><div class="details admonition warning open"><div class="details-summary admonition-title"><i class="icon fas fa-exclamation-triangle fa-fw"></i>警告<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content><pre><code>此處提供的 yaml 內容須依據實際安裝的版本去修改版本號，例如在本文件中使用的 Argo CD 版本為 v2.2.1 版，就要將相關版本設定為 v2.2.1。而 Redis 與其他套件的部分，建議參考官方安裝文件中使用的版號進行設定，盡可能使 label 中的版號與實際使用的套件版本相符。
+</code></pre></div></div></div><details><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Deployment</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/component</span><span class=p>:</span><span class=w> </span><span class=l>server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/part-of</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=l>v2.2.1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>containers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>command</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>argocd-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- --<span class=l>staticassets</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>/shared/app</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span>- --<span class=l>insecure</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Deployment</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/component</span><span class=p>:</span><span class=w> </span><span class=l>repo-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-repo-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/part-of</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>argocd-repo-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=l>v2.2.1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-repo-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>argocd-repo-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=l>v2.2.1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Deployment</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/component</span><span class=p>:</span><span class=w> </span><span class=l>redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/part-of</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>argocd-redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=l>v6.2.4</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>argocd-redis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=l>v6.2.4</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Deployment</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/component</span><span class=p>:</span><span class=w> </span><span class=l>dex-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-dex-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/part-of</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>argocd-dex-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=l>v2.30.0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-dex-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>argocd-dex-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=l>v2.30.0</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>apps/v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>StatefulSet</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/component</span><span class=p>:</span><span class=w> </span><span class=l>application-controller</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-application-controller</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app.kubernetes.io/part-of</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>argocd-application-controller</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=l>v2.2.1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-application-controller</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>labels</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>app</span><span class=p>:</span><span class=w> </span><span class=l>argocd-application-controller</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=l>v2.2.1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Service</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-dex-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># expose container ports to istio network</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>http</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>5556</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>TCP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>5556</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>http-grpc</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>5557</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>TCP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>5557</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>http-metrics</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>5558</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>TCP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>5558</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Service</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-metrics</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># expose container ports to istio network</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>http-metrics</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>8082</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>TCP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>8082</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Service</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-repo-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># expose container ports to istio network</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>https-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>8081</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>TCP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>8081</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>http-metrics</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>8084</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>TCP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>8084</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Service</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server-metrics</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># expose container ports to istio network</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>http-metrics</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>8083</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>TCP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>8083</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Service</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>argocd-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>ports</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>http-argocd-server</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>80</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>protocol</span><span class=p>:</span><span class=w> </span><span class=l>TCP</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>targetPort</span><span class=p>:</span><span class=w> </span><span class=m>8080</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># delete https port</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>port</span><span class=p>:</span><span class=w> </span><span class=m>443</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>$patch</span><span class=p>:</span><span class=w> </span><span class=l>delete</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></details></li><li><p>安裝<div class="details admonition warning open"><div class="details-summary admonition-title"><i class="icon fas fa-exclamation-triangle fa-fw"></i>警告<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content><pre><code>建議前述準備的 yaml 檔案統一放在專門的資料夾
+</code></pre></div></div></div></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply -k ./
+</span></span></code></pre></td></tr></table></div></div></li></ol><h1 id=cli-tool class=headerLink><a href=#cli-tool class=header-mark></a>CLI Tool</h1><p><a href=https://argo-cd.readthedocs.io/en/stable/cli_installation/ target=_blank rel="noopener noreferrer">官方文件</a></p><div class="details admonition warning open"><div class="details-summary admonition-title"><i class="icon fas fa-exclamation-triangle fa-fw"></i>警告<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>CLI 不需要安裝在 ArgoCD 所在的叢集主機 (或 kubernetes master server)，但是有些 CLI 命令倚賴 kube config 來取得叢集資料，如果 CLI 裝在沒有 kube config 的環境時，有些命令會出錯</div></div></div><h2 id=install---linux class=headerLink><a href=#install---linux class=header-mark></a>1 Install - Linux</h2><ul><li>Download Latest with curl (Linux)</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+</span></span><span class=line><span class=cl>chmod +x /usr/local/bin/argocd
+</span></span></code></pre></td></tr></table></div></div><ul><li>Download Concrete Version with curl (Linux)</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.2.1/argocd-linux-amd64
+</span></span><span class=line><span class=cl>chmod +x /usr/local/bin/argocd
+</span></span></code></pre></td></tr></table></div></div><h1 id=manage class=headerLink><a href=#manage class=header-mark></a>Manage</h1><h2 id=remote-cluster class=headerLink><a href=#remote-cluster class=header-mark></a>1 Remote Cluster</h2><ol><li>參考 <a href=https://hackmd.io/@YuChia/Kubernetes-Multi-Cluster target=_blank rel="noopener noreferrer">Kubernetes Multi-Cluster</a> 中的說明，調整 ArgoCD 所在的網路叢集的 Kubernetes config，加入外部叢集資訊</li><li>確認外部叢集的名稱以供後續 ArgoCD 加入外部叢集時使用<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl config get-contexts -o name
+</span></span></code></pre></td></tr></table></div></div></li><li>使用 ArgoCD CLI 登入 ArgoCD<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>argocd login &lt;ARGOCD_SERVER&gt;
+</span></span></code></pre></td></tr></table></div></div></li><li>加入外部叢集<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>argocd cluster add &lt;remote-cluster name&gt;
+</span></span></code></pre></td></tr></table></div></div></li><li>現在可以在 UI 中看到外部叢集了</li><li>CLI 參考<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># List all known clusters in JSON format:</span>
+</span></span><span class=line><span class=cl>argocd cluster list -o json
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Add a target cluster configuration to ArgoCD. The context must exist in your kubectl config:</span>
+</span></span><span class=line><span class=cl>argocd cluster add &lt;cluster name&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Get specific details about a cluster in plain text (wide) format:</span>
+</span></span><span class=line><span class=cl>argocd cluster get &lt;cluster name&gt; -o wide
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Remove a target cluster context from ArgoCD</span>
+</span></span><span class=line><span class=cl>argocd cluster rm &lt;cluster name&gt;
+</span></span></code></pre></td></tr></table></div></div></li></ol><h2 id=user class=headerLink><a href=#user class=header-mark></a>2 User</h2><ol><li>Get Default Admin Password<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl -n argocd get secret argocd-initial-admin-secret -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s2>&#34;{.data.password}&#34;</span> <span class=p>|</span> base64 -d<span class=p>;</span> <span class=nb>echo</span>
+</span></span></code></pre></td></tr></table></div></div></li></ol><div class="details admonition warning open"><div class="details-summary admonition-title"><i class="icon fas fa-exclamation-triangle fa-fw"></i>警告<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>不完整</div></div></div><ol><li><p>使用官方提供的命令取得管理員密碼，登入系統後應修改密碼</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl -n argocd get secret argocd-initial-admin-secret -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s2>&#34;{.data.password}&#34;</span> <span class=p>|</span> base64 -d
+</span></span></code></pre></td></tr></table></div></div></li><li><p>編輯 ConfigMap</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl edit cm argocd-cm -n argocd
+</span></span></code></pre></td></tr></table></div></div></li><li><p>找到 data 區段，加入使用者</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>data</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>accounts.&lt;user&gt;</span><span class=p>:</span><span class=w> </span><span class=l>apiKey,login</span><span class=w> </span><span class=c># 加入這個</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>application.instanceLabelKey</span><span class=p>:</span><span class=w> </span><span class=l>argocd.argoproj.io/instance</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=l>&lt;argocd server url&gt;</span><span class=w> </span><span class=c># 這個可以順便改一下</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li><li><p>到 &lt;argocd server url>/settings/accounts 建立登入的 Token (密碼的更新方式待測試)</p></li></ol><h1 id=extension-install class=headerLink><a href=#extension-install class=header-mark></a>Extension Install</h1><h2 id=core-install class=headerLink><a href=#core-install class=header-mark></a>1 Core Install</h2><p><a href=https://github.com/argoproj-labs/argocd-extensions target=_blank rel="noopener noreferrer">官方擴充套件</a> 建議使用 Kustomization 方式安裝，同時，安裝時會需要使用到 Git，請確認系統內已安裝 Git。</p><p>kustomization yaml (Base on <a href=#kustomization-Install-With-Istio rel>kustomization Install With Istio</a>)</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>kustomize.config.k8s.io/v1beta1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Kustomization</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=l>argocd</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>resources</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>install-2.2.1.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>VirtualService.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>Gateway.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>patchesStrategicMerge</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>istio_patches.yaml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>components</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c># extensions controller component</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=l>https://github.com/argoproj-labs/argocd-extensions/manifests</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=rollout-extension-install class=headerLink><a href=#rollout-extension-install class=header-mark></a>2 Rollout-extension install</h2><p>Argo Rollout dashboard into the Argo CD Web UI.</p><ul><li>download yaml</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl https://raw.githubusercontent.com/argoproj-labs/rollout-extension/v0.1.0/manifests/install.yaml -o argocd-rollout-extension.yaml
+</span></span></code></pre></td></tr></table></div></div><ul><li>apply</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply -n argocd -f argocd-rollout-extension.yaml
+</span></span></code></pre></td></tr></table></div></div><h1 id=reference class=headerLink><a href=#reference class=header-mark></a>Reference</h1><p><a href=https://argo-cd.readthedocs.io/en/stable/getting_started/ target=_blank rel="noopener noreferrer">Argo Cd Official Startup</a>
+<a href=https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/ target=_blank rel="noopener noreferrer">Argo Cd Official TLS Configuration</a>
+<a href=https://github.com/argoproj/argo-cd/blob/master/docs/getting_started.md target=_blank rel="noopener noreferrer">Argo Cd Official Startup-Github</a>
+<a href=https://github.com/argoproj/argo-cd/releases target=_blank rel="noopener noreferrer">Argo Cd Github Release Page</a></p></div><h2></h2><div class=related-container><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-ubuntu-with-containerd/>Kubernetes 環境準備 - ubuntu & containerd</a></h2></div><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-centos7-with-containerd/>Kubernetes 環境準備 - centos7 & containerd</a></h2></div><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-centos7-with-docker/>Kubernetes 環境準備 - centos7 & docker</a></h2></div><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/05/argocd-install/>ArgoCD install use kustomizaion</a></h2></div><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/04/istio-%E9%99%84%E5%B8%B6%E7%9A%84-plugin-%E5%AE%89%E8%A3%9D/>Istio 附帶的 Plugin 安裝</a></h2></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新於 2023-11-19</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-mardown href=https://yuchia-wei.github.io/2022/04/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98/index.md target=_blank rel="noopener noreferrer">閱讀原始文檔</a></span></div><div class=post-info-share><button title="分享到 Facebook" data-sharer=facebook data-url=https://yuchia-wei.github.io/2022/04/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98/ data-hashtag=Install><span class="fab fa-facebook-square fa-fw"></span></button><button title="分享到 Line" data-sharer=line data-url=https://yuchia-wei.github.io/2022/04/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98/ data-title="ArgoCD 安裝筆記"><span data-svg-src=https://yuchia-wei.github.io/lib/simple-icons/icons/line.min.svg></span></button><script>function shareOnMastodon(e,t){const o="share_mastodon_domain",i=localStorage.getItem(o)??"mastodon.social",n=prompt("Enter your Mastodon domain",i);if(n===null)return;localStorage.setItem(o,n);const a=e+`
+
+`+t,s=new URL("https://"+n);s.pathname="share",s.searchParams.append("text",a),window.open(s,"_blank","width=500,height=500,left=500,toolbar=0,status=0")}</script>
+<button title="分享到 Mastodon" onclick='shareOnMastodon("ArgoCD 安裝筆記","https://yuchia-wei.github.io/2022/04/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98/")'><span class="fab fa-mastodon fa-fw"></span></button></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=https://yuchia-wei.github.io/tags/install/>Install</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://yuchia-wei.github.io/>主頁</a></span></section></div><div class=post-nav><a href=https://yuchia-wei.github.io/2022/04/%E4%BD%BF%E7%94%A8-argocd-%E5%BB%BA%E7%AB%8B-kubernetes-%E5%9F%BA%E7%A4%8E%E5%BB%BA%E8%A8%AD/ class=prev rel=prev title="使用 ArgoCD 建立 Kubernetes 基礎建設"><i class="fas fa-angle-left fa-fw"></i>使用 ArgoCD 建立 Kubernetes 基礎建設</a>
+<a href=https://yuchia-wei.github.io/2022/04/kubernetes-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98-part.1-%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99/ class=next rel=next title="Kubernetes 安裝筆記 part.1 : 環境準備">Kubernetes 安裝筆記 part.1 : 環境準備<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>&nbsp;|&nbsp;&nbsp;|&nbsp;</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://github.com/yuchia-wei target=_blank rel="noopener noreferrer">YuChia Wei</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class=footer-line></div><div class=footer-line></div></div></footer></div><div id=fixed-buttons><a href=#back-to-top id=back-to-top-button class=fixed-button title=回到頂部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看評論><i class="fas fa-comment fa-fw"></i></a></div><div class=assets><script type=text/javascript>window.config={code:{copyTitle:"複製到剪貼板",maxShownLines:10},comment:{},data:{"desktop-header-typeit":"小佑的筆記","mobile-header-typeit":"小佑的筆記"},sharerjs:!0,table:{sort:!0},typeit:{cursorChar:"|",cursorSpeed:1e3,data:{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},duration:-1,speed:100}}</script><script type=text/javascript src=https://yuchia-wei.github.io/lib/tablesort/tablesort.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/sharer/sharer.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/typeit/typeit.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/js/theme.min.js defer></script></div></body></html>

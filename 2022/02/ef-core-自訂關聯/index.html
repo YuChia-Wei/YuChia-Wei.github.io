@@ -1,0 +1,439 @@
+<!doctype html><html lang=zh-TW><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>EF Core 自訂關聯 - -小佑-（&lt;ゝω·）キラbosh☆</title><meta name=Description content="EF Core 中建立自訂關聯，常用於實際資料庫中的 Table 未建立關聯的情境"><meta property="og:title" content="EF Core 自訂關聯">
+<meta property="og:description" content="EF Core 中建立自訂關聯，常用於實際資料庫中的 Table 未建立關聯的情境"><meta property="og:type" content="article"><meta property="og:url" content="https://yuchia-wei.github.io/2022/02/ef-core-%E8%87%AA%E8%A8%82%E9%97%9C%E8%81%AF/"><meta property="og:image" content="https://yuchia-wei.github.io/images/avatar.jpg"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-02-06T20:10:27+08:00"><meta property="article:modified_time" content="2023-11-19T21:13:04+08:00"><meta property="og:site_name" content="-小佑-（<ゝω·）キラbosh☆"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yuchia-wei.github.io/images/avatar.jpg"><meta name=twitter:title content="EF Core 自訂關聯"><meta name=twitter:description content="EF Core 中建立自訂關聯，常用於實際資料庫中的 Table 未建立關聯的情境"><meta name=application-name content="-小佑-（<ゝω·）キラbosh☆"><meta name=apple-mobile-web-app-title content="-小佑-（<ゝω·）キラbosh☆"><meta name=theme-color content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=https://yuchia-wei.github.io/favicon.ico><link rel=icon type=image/png sizes=32x32 href=https://yuchia-wei.github.io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://yuchia-wei.github.io/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=https://yuchia-wei.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yuchia-wei.github.io/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://yuchia-wei.github.io/2022/02/ef-core-%E8%87%AA%E8%A8%82%E9%97%9C%E8%81%AF/><link rel=prev href=https://yuchia-wei.github.io/2022/02/use-ef-core-to-join/><link rel=next href=https://yuchia-wei.github.io/2022/02/kubernetes-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98-part.2-%E5%8F%A2%E9%9B%86%E5%88%9D%E5%A7%8B%E5%8C%96/><link rel=stylesheet href=https://yuchia-wei.github.io/css/main.css><link rel=stylesheet href=https://yuchia-wei.github.io/lib/normalize/normalize.min.css><link rel=stylesheet href=https://yuchia-wei.github.io/css/color.css><link rel=stylesheet href=https://yuchia-wei.github.io/css/style.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=https://yuchia-wei.github.io/lib/fontawesome-free/all.min.css><noscript><link rel=stylesheet href=https://yuchia-wei.github.io/lib/fontawesome-free/all.min.css></noscript><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=https://yuchia-wei.github.io/lib/animate/animate.min.css><noscript><link rel=stylesheet href=https://yuchia-wei.github.io/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"EF Core 自訂關聯","inLanguage":"zh-TW","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/yuchia-wei.github.io\/2022\/02\/ef-core-%E8%87%AA%E8%A8%82%E9%97%9C%E8%81%AF\/"},"image":["https:\/\/yuchia-wei.github.io\/images\/Apple-Devices-Preview.png"],"genre":"posts","keywords":"EFCore","wordcount":1907,"url":"https:\/\/yuchia-wei.github.io\/2022\/02\/ef-core-%E8%87%AA%E8%A8%82%E9%97%9C%E8%81%AF\/","datePublished":"2022-02-06T20:10:27+08:00","dateModified":"2023-11-19T21:13:04+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"YuChia, Wei","logo":{"@type":"ImageObject","url":"https:\/\/yuchia-wei.github.io\/images\/avatar.jpg","width":280,"height":270}},"author":{"@type":"Person","name":"YuChia Wei"},"description":"EF Core 中建立自訂關聯，常用於實際資料庫中的 Table 未建立關聯的情境"}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>function setTheme(e){document.body.setAttribute("theme",e),document.documentElement.style.setProperty("color-scheme",e==="light"?"light":"dark"),window.theme=e,window.isDark=window.theme!=="light"}function saveTheme(e){window.localStorage&&localStorage.setItem("theme",e)}function getMeta(e){const t=document.getElementsByTagName("meta");for(let n=0;n<t.length;n++)if(t[n].getAttribute("name")===e)return t[n];return""}if(window.localStorage&&localStorage.getItem("theme")){let e=localStorage.getItem("theme");e==="light"||e==="dark"||e==="black"?setTheme(e):setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}else"auto"==="light"||"auto"==="dark"||"auto"==="black"?(setTheme("auto"),saveTheme("auto")):(saveTheme("auto"),setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));let metaColors={light:"#f8f8f8",dark:"#252627",black:"#000000"};getMeta("theme-color").content=metaColors[document.body.getAttribute("theme")],window.switchThemeEventSet=new Set</script><div id=back-to-top></div><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://yuchia-wei.github.io/ title="-小佑-（<ゝω·）キラbosh☆"><span class=header-title-pre><i class='far fa-edit fa-fw'></i></span><span id=desktop-header-typeit class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://yuchia-wei.github.io/posts/>文章 </a><a class=menu-item href=https://yuchia-wei.github.io/tags/>標籤 </a><a class=menu-item href=https://yuchia-wei.github.io/categories/>分類 </a><a class=menu-item href=https://yuchia-wei.github.io/series/>系列文 </a><a class=menu-item href=https://yuchia-wei.github.io/authors/>作者 </a><a class=menu-item href=https://yuchia-wei.github.io/showcase/>作品 </a><a class=menu-item href=https://yuchia-wei.github.io/categories/documentation/>文件 </a><a class=menu-item href=https://yuchia-wei.github.io/about/>關於 </a><a class=menu-item href=https://github.com/YuChia-Wei title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw'></i> </a><a class=menu-item href=https://www.linkedin.com/in/yuchia-wei/ title=LinkedIn rel="noopener noreferrer" target=_blank><i class='fab fa-linkedin fa-fw'></i> </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item language" title=選擇語言>繁體中文 (臺灣)<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title=選擇語言 id=language-select-desktop onchange="location=this.value"><option value=/2022/02/ef-core-%E8%87%AA%E8%A8%82%E9%97%9C%E8%81%AF/ selected>繁體中文 (臺灣)</option></select>
+</a><a href=javascript:void(0); class="menu-item theme-select" title=切換主題><i class="fas fa-adjust fa-fw"></i>
+<select class=color-theme-select id=theme-select-desktop title=切換主題><option value=light></option><option value=dark></option><option value=black></option><option value=auto></option></select></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://yuchia-wei.github.io/ title="-小佑-（<ゝω·）キラbosh☆"><span class=header-title-pre><i class='far fa-edit fa-fw'></i></span><span id=mobile-header-typeit class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><a class=menu-item href=https://yuchia-wei.github.io/posts/ title>文章</a><a class=menu-item href=https://yuchia-wei.github.io/tags/ title>標籤</a><a class=menu-item href=https://yuchia-wei.github.io/categories/ title>分類</a><a class=menu-item href=https://yuchia-wei.github.io/series/ title>系列文</a><a class=menu-item href=https://yuchia-wei.github.io/authors/ title>作者</a><a class=menu-item href=https://yuchia-wei.github.io/showcase/ title>作品</a><a class=menu-item href=https://yuchia-wei.github.io/categories/documentation/ title>文件</a><a class=menu-item href=https://yuchia-wei.github.io/about/ title>關於</a><a class=menu-item href=https://github.com/YuChia-Wei title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw'></i></a><a class=menu-item href=https://www.linkedin.com/in/yuchia-wei/ title=LinkedIn rel="noopener noreferrer" target=_blank><i class='fab fa-linkedin fa-fw'></i></a><a href=javascript:void(0); class="menu-item theme-select" title=切換主題>
+<i class="fas fa-adjust fa-fw"></i>
+<select class=color-theme-select id=theme-select-mobile title=切換主題><option value=light></option><option value=dark></option><option value=black></option><option value=auto></option></select>
+</a><a href=javascript:void(0); class=menu-item title=選擇語言>繁體中文 (臺灣)<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title=選擇語言 onchange="location=this.value"><option value=/2022/02/ef-core-%E8%87%AA%E8%A8%82%E9%97%9C%E8%81%AF/ selected>繁體中文 (臺灣)</option></select></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目錄</h2><div class=toc-content id=toc-content-auto><nav id=TableOfContents></nav></div></div><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC","true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">EF Core 自訂關聯</h1><div class=post-meta><div class=post-meta-line><span class=post-author><span class="author fas fa-user-circle fa-fw"></span><a href=https://github.com/yuchia-wei title=Author target=_blank rel="noopener noreferrer author" class=author>YuChia Wei</a>
+</span>&nbsp;<span class=post-category></span>&nbsp;<span class=post-category>收錄於 <a href><i class="far fa-folder fa-fw"></i></a>&nbsp;<a href=https://yuchia-wei.github.io/categories/ef-core/><i class="far fa-folder fa-fw"></i>EF-Core</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2022-02-06>2022-02-06</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime=2023-11-19>2023-11-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;約 1907 字&nbsp;<i class="far fa-clock fa-fw"></i>&nbsp;預計閱讀 4 分鐘&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目錄</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents></nav></div></div><div class=content id=content><p>當 Db 內的 Table 都沒有設定關聯，又希望在不調整 Db 的情況下用操作有關連 Table 的方法使用 EF Core 時，可以在 EF Core 所使用的 Entity 與 Entity Configuration 中自訂關聯性，EF Core 會自行調整 Sql 語法 (使用 Left join 或其它 join 語法) 來加入資料。</br></p><p>EF Power Tool 產生的 Entity / Entity Configuration 預設皆有引入 partial 關鍵字，因此，為了區別工具產生的 code 與自訂的 code，我們可以另外建立新的檔案處理自定義的部分。</br></p><p>本篇範例為 一對一、一對多 的設定方式。</br></p><div class="details admonition warning open"><div class="details-summary admonition-title"><i class="icon fas fa-exclamation-triangle fa-fw"></i>警告<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>TODO: 示範用程式碼待補 (2022-02-06)</div></div></div><h1 id=使用的專案結構 class=headerLink><a href=#%e4%bd%bf%e7%94%a8%e7%9a%84%e5%b0%88%e6%a1%88%e7%b5%90%e6%a7%8b class=header-mark></a>使用的專案結構</h1><ul><li><p>Db.Repository 專案結構樹</p><details><summary>結構樹</summary><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>.
+</span></span><span class=line><span class=cl>├── Configurations
+</span></span><span class=line><span class=cl>├── Entities
+</span></span><span class=line><span class=cl>├── [db name]Context.cs
+</span></span><span class=line><span class=cl>└── efpt.config.json
+</span></span></code></pre></td></tr></table></div></div></details></li><li><p>專案內部資料夾說明</p><table><thead><tr><th>資料夾</th><th>說明</th></tr></thead><tbody><tr><td>Configurations</td><td>EF Power Tool 產生的 Entity 設定檔</td></tr><tr><td>Entities</td><td>EF Power Tool 產生的 Entity 檔</td></tr><tr><td>[db name]Context.cs</td><td>EF Core DbContext By Db</td></tr><tr><td>efpt.config.json</td><td>EF Core Power Tool 設定檔，除了進行 Entity 增減外，不應有其它變更</td></tr></tbody></table></li></ul><p><strong>以下操作均使用 EF Core 5.0</strong></p><h1 id=entity-調整 class=headerLink><a href=#entity-%e8%aa%bf%e6%95%b4 class=header-mark></a>Entity 調整</h1><p>在 Db.Repository 專案中，找到想要加入自訂關聯的 Entity，並建立一個新的檔案，名為 {EntityName}.CustomProperty.cs。
+註：新增的檔案後續的字節 (CustomProperty) 可以依據該檔案內放置的項目進行調整，本次以 CustomProperty 命名是因內容存放自定義屬性。</p><ul><li><p>EF Power Tool 產生的 Entity File</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=c1>//File: Db.Repository/Entities/MainTable.cs</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>MainTable</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>MainId</span><span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//File: Db.Repository/Entities/OneToManySubTable.cs</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>OneToManySubTable</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>MainId</span><span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>SubId</span><span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//File: Db.Repository/Entities/OneToOneSubTable.cs</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>OneToOneSubTable</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>MainId</span><span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>SubId</span><span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>手動新增的 Partial File</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=c1>//File: Db.Repository/Entities/MainTable.CustomProperty.cs</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>MainTable</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>MainTable</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=n>OneToManySubItems</span> <span class=p>=</span> <span class=k>new</span> <span class=n>HashSet</span><span class=p>&lt;</span><span class=n>OneToManySubTable</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>virtual</span> <span class=n>ICollection</span><span class=p>&lt;</span><span class=n>OneToManySubTable</span><span class=p>&gt;</span> <span class=n>OneToManySubItems</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>virtual</span> <span class=n>OnoToOneSubTable</span> <span class=n>OneToOneSubItem</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//File: Db.Repository/Entities/OneToManySubTable.CustomProperty.cs</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>OneToManySubTable</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>virtual</span> <span class=n>MainTable</span> <span class=n>Header</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//File: Db.Repository/Entities/OneToOneSubTable.CustomProperty.cs</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>OneToOneSubTable</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>virtual</span> <span class=n>MainTable</span> <span class=n>Header</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><h1 id=entity-configuration-調整 class=headerLink><a href=#entity-configuration-%e8%aa%bf%e6%95%b4 class=header-mark></a>Entity Configuration 調整</h1><p>在 Db.Repository 專案中，找到想要加入自訂關聯的 Entity Configuration，並建立一個新的檔案，名為 {EntityName}Configuration.Partial.cs。
+註：新增的檔案後續的字節 (Partial) 可以依據該檔案內放置的項目進行調整，本次以 Partial 命名是因 &ldquo;關聯&rdquo; 的英文過長，而採用較短且符合檔案目的的 Partial</p><ul><li><p>EF Power Tool 產生的 Entity Configuration</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=c1>//File: Db.Repository/Configurations/OneToOneSubTableConfiguration.cs</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>OneToOneSubTableConfiguration</span> <span class=p>:</span> <span class=n>IEntityTypeConfiguration</span><span class=p>&lt;</span><span class=n>OneToOneSubTable</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>void</span> <span class=n>Configure</span><span class=p>(</span><span class=n>EntityTypeBuilder</span><span class=p>&lt;</span><span class=n>OneToOneSubTable</span><span class=p>&gt;</span> <span class=n>entity</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>entity</span><span class=p>.</span><span class=n>HasKey</span><span class=p>(</span><span class=n>e</span> <span class=p>=&gt;</span> <span class=n>e</span><span class=p>.</span><span class=n>SubId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>entity</span><span class=p>.</span><span class=n>ToTable</span><span class=p>(</span><span class=s>&#34;OneToOneSubTable&#34;</span><span class=p>,</span> <span class=s>&#34;dbo&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>entity</span><span class=p>.</span><span class=n>HasComment</span><span class=p>(</span><span class=s>&#34;一對一子表&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>entity</span><span class=p>.</span><span class=n>Property</span><span class=p>(</span><span class=n>e</span> <span class=p>=&gt;</span> <span class=n>e</span><span class=p>.</span><span class=n>SubId</span><span class=p>).</span><span class=n>HasColumnName</span><span class=p>(</span><span class=s>&#34;SubId&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=n>OnConfigurePartial</span><span class=p>(</span><span class=n>entity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>partial</span> <span class=k>void</span> <span class=n>OnConfigurePartial</span><span class=p>(</span><span class=n>EntityTypeBuilder</span><span class=p>&lt;</span><span class=n>OneToOneSubTable</span><span class=p>&gt;</span> <span class=n>entity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//File: Db.Repository/Configurations/OneToManySubTableConfiguration.cs</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>OneToManySubTableConfiguration</span> <span class=p>:</span> <span class=n>IEntityTypeConfiguration</span><span class=p>&lt;</span><span class=n>OneToManySubTable</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>void</span> <span class=n>Configure</span><span class=p>(</span><span class=n>EntityTypeBuilder</span><span class=p>&lt;</span><span class=n>OneToManySubTable</span><span class=p>&gt;</span> <span class=n>entity</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>entity</span><span class=p>.</span><span class=n>HasKey</span><span class=p>(</span><span class=n>e</span> <span class=p>=&gt;</span> <span class=n>e</span><span class=p>.</span><span class=n>SubId</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>entity</span><span class=p>.</span><span class=n>ToTable</span><span class=p>(</span><span class=s>&#34;OneToManySubTable&#34;</span><span class=p>,</span> <span class=s>&#34;dbo&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>entity</span><span class=p>.</span><span class=n>HasComment</span><span class=p>(</span><span class=s>&#34;一對多子表&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>entity</span><span class=p>.</span><span class=n>Property</span><span class=p>(</span><span class=n>e</span> <span class=p>=&gt;</span> <span class=n>e</span><span class=p>.</span><span class=n>SubId</span><span class=p>).</span><span class=n>HasColumnName</span><span class=p>(</span><span class=s>&#34;SubId&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=n>OnConfigurePartial</span><span class=p>(</span><span class=n>entity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>partial</span> <span class=k>void</span> <span class=n>OnConfigurePartial</span><span class=p>(</span><span class=n>EntityTypeBuilder</span><span class=p>&lt;</span><span class=n>OneToManySubTable</span><span class=p>&gt;</span> <span class=n>entity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>手動新增的 Partial File
+補充：OnDelete 的參數可參照 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/microsoft.entityframeworkcore.deletebehavior?view=efcore-5.0" target=_blank rel="noopener noreferrer">微軟官方</a> 的說明調整設定</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=c1>//File: Db.Repository/Configurations/OneToOneSubTableConfiguration.Partial.cs</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>OneToOneSubTableConfiguration</span> <span class=p>:</span> <span class=n>IEntityTypeConfiguration</span><span class=p>&lt;</span><span class=n>OneToOneSubTable</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>partial</span> <span class=k>void</span> <span class=n>OnConfigurePartial</span><span class=p>(</span><span class=n>EntityTypeBuilder</span><span class=p>&lt;</span><span class=n>OneToOneSubTable</span><span class=p>&gt;</span> <span class=n>entity</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>entity</span><span class=p>.</span><span class=n>HasOne</span><span class=p>(</span><span class=n>d</span> <span class=p>=&gt;</span> <span class=n>d</span><span class=p>.</span><span class=n>Header</span><span class=p>)</span>                    <span class=c1>//設定 OneToOneSubTable 這個 Entity Header 這個屬性是屬於外部資料</span>
+</span></span><span class=line><span class=cl>              <span class=p>.</span><span class=n>WithOne</span><span class=p>(</span><span class=n>p</span> <span class=p>=&gt;</span> <span class=n>p</span><span class=p>.</span><span class=n>OneToOneSubItem</span><span class=p>)</span>          <span class=c1>//設定前一行 HasOne 中選擇的屬性 (Header) 的型別 (MainTable) 中的 OneToOneSubItem 屬性對應自己 (OneToOneSubTable)</span>
+</span></span><span class=line><span class=cl>              <span class=p>.</span><span class=n>HasForeignKey</span><span class=p>(</span><span class=n>d</span> <span class=p>=&gt;</span> <span class=n>d</span><span class=p>.</span><span class=n>MainId</span><span class=p>)</span>             <span class=c1>//設定自己 (OneToOneSubTable) 的哪一個屬性是紀錄 Header 的 PK</span>
+</span></span><span class=line><span class=cl>              <span class=p>.</span><span class=n>OnDelete</span><span class=p>(</span><span class=n>DeleteBehavior</span><span class=p>.</span><span class=n>ClientSetNull</span><span class=p>);</span>  <span class=c1>//設定資料刪除後的處理方式 (Header 被刪掉後是否要跟著被刪掉)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//File: Db.Repository/Configurations/OneToManySubTableConfiguration.Partial.cs</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>partial</span> <span class=k>class</span> <span class=nc>OneToManySubTableConfiguration</span> <span class=p>:</span> <span class=n>IEntityTypeConfiguration</span><span class=p>&lt;</span><span class=n>OneToManySubTable</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>partial</span> <span class=k>void</span> <span class=n>OnConfigurePartial</span><span class=p>(</span><span class=n>EntityTypeBuilder</span><span class=p>&lt;</span><span class=n>OneToManySubTable</span><span class=p>&gt;</span> <span class=n>entity</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//各方法說明皆與 OneToOne 相同，只是因為 OneToMany 是一對多，所以第二行設定從 WithOne 改為 WithMany</span>
+</span></span><span class=line><span class=cl>        <span class=n>entity</span><span class=p>.</span><span class=n>HasOne</span><span class=p>(</span><span class=n>d</span> <span class=p>=&gt;</span> <span class=n>d</span><span class=p>.</span><span class=n>Header</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>              <span class=p>.</span><span class=n>WithMany</span><span class=p>(</span><span class=n>p</span> <span class=p>=&gt;</span> <span class=n>p</span><span class=p>.</span><span class=n>OneToManySubItems</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>              <span class=p>.</span><span class=n>HasForeignKey</span><span class=p>(</span><span class=n>d</span> <span class=p>=&gt;</span> <span class=n>d</span><span class=p>.</span><span class=n>SubId</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>              <span class=p>.</span><span class=n>OnDelete</span><span class=p>(</span><span class=n>DeleteBehavior</span><span class=p>.</span><span class=n>ClientSetNull</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><h1 id=使用方式 class=headerLink><a href=#%e4%bd%bf%e7%94%a8%e6%96%b9%e5%bc%8f class=header-mark></a>使用方式</h1><p>本章節提供三種 EF Core 操作 Db 的方法，可依需要自行選擇做法。
+EF Core 中，觸發有關聯的 SubTable 需要調用 Include / ThenInclude 方法。</p><ul><li><p>直接轉成輸出用的 Dto 物件寫法
+此寫法可自訂輸出欄位，減少 SqlServer &lt;-> WebService 間的資料傳輸量</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>private</span> <span class=kd>async</span> <span class=n>Task</span><span class=p>&lt;</span><span class=n>IEnumerable</span><span class=p>&lt;</span><span class=n>MainTableDto</span><span class=p>&gt;&gt;</span> <span class=n>GetAllMainTableDtos</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=n>_testContext</span><span class=p>.</span><span class=n>MainTables</span>
+</span></span><span class=line><span class=cl>                        <span class=p>.</span><span class=n>AsNoTracking</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                        <span class=p>.</span><span class=n>Get</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                        <span class=p>.</span><span class=n>Include</span><span class=p>(</span><span class=n>o</span><span class=p>=&gt;</span><span class=n>o</span><span class=p>.</span><span class=n>OneToManySubItems</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=p>.</span><span class=n>Include</span><span class=p>(</span><span class=n>o</span><span class=p>=&gt;</span><span class=n>o</span><span class=p>.</span><span class=n>OneToOneSubItem</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=p>.</span><span class=n>Select</span><span class=p>(</span><span class=n>o</span> <span class=p>=&gt;</span> <span class=k>new</span> <span class=n>MainTableDto</span>
+</span></span><span class=line><span class=cl>                        <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=n>MainId</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>MainId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                            <span class=c1>// 這邊允許使用 AutoMapper 直接映照欄位，如註解，但若 Sub Table 中只需要特定欄位的話，則建議使用此處範例使用的寫法</span>
+</span></span><span class=line><span class=cl>                            <span class=c1>// OneToManySubItems = this._mapper.Map&lt;IEnumerable&lt;OneToManySubTableDto&gt;&gt;(o.OneToManySubItems)</span>
+</span></span><span class=line><span class=cl>                            <span class=n>OneToManySubItems</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>OneToManySubItems</span><span class=p>.</span><span class=n>Select</span><span class=p>(</span><span class=n>m</span><span class=p>=&gt;</span><span class=k>new</span> <span class=n>OneToManySubTableDto</span>
+</span></span><span class=line><span class=cl>                            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                <span class=n>SubId</span> <span class=p>=</span> <span class=n>m</span><span class=p>.</span><span class=n>SubId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                <span class=n>MainId</span> <span class=p>=</span> <span class=n>m</span><span class=p>.</span><span class=n>MainId</span>
+</span></span><span class=line><span class=cl>                            <span class=p>}),</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                            <span class=c1>// OneToOneSubItem = this._mapper.Map&lt;OneToOneSubTableDto&gt;(o.OneToOneSubItem)</span>
+</span></span><span class=line><span class=cl>                            <span class=n>OneToOneSubItem</span> <span class=p>=</span> <span class=k>new</span> <span class=n>OneToOneSubTableDto</span>
+</span></span><span class=line><span class=cl>                            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                <span class=n>SubId</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>OneToOneSubItem</span><span class=p>.</span><span class=n>SubId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                <span class=n>MainId</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>OneToOneSubItem</span><span class=p>.</span><span class=n>MainId</span>
+</span></span><span class=line><span class=cl>                            <span class=p>})</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}).</span><span class=n>ToListAsync</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>完整依據 Table Entity 內容轉出 Db 資料，再自行組合 Service 輸出用的 Dto 物件寫法
+此寫法適合在需要一些額外的欄位判斷事情，但是那些欄位又不需要輸出的情境</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>private</span> <span class=kd>async</span> <span class=n>Task</span><span class=p>&lt;</span><span class=n>IEnumerable</span><span class=p>&lt;</span><span class=n>MainTableDto</span><span class=p>&gt;&gt;</span> <span class=n>GetAllMainTableDtos</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>var</span> <span class=n>mainTableList</span> <span class=p>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=n>_testContext</span><span class=p>.</span><span class=n>MainTables</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>AsNoTracking</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>Get</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>Include</span><span class=p>(</span><span class=n>o</span><span class=p>=&gt;</span><span class=n>o</span><span class=p>.</span><span class=n>OneToManySubItems</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>Include</span><span class=p>(</span><span class=n>o</span><span class=p>=&gt;</span><span class=n>o</span><span class=p>.</span><span class=n>OneToOneSubItem</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>ToListAsync</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 若無其它需求，可直接使用 AutoMapper 進行資料映照並轉出</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=n>_mapper</span><span class=p>.</span><span class=n>Map</span><span class=p>&lt;</span><span class=n>IEnumerable</span><span class=p>&lt;</span><span class=n>MainTableDto</span><span class=p>&gt;&gt;(</span><span class=n>mainTableList</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//==============================</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 不使用 AutoMapper 進行資料設定的方式，彈性較高，但是撰寫較麻煩</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>mainTableList</span><span class=p>.</span><span class=n>Select</span><span class=p>(</span><span class=n>o</span> <span class=p>=&gt;</span> <span class=k>new</span> <span class=n>MainTableDto</span>
+</span></span><span class=line><span class=cl>                        <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=n>MainId</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>MainId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                            <span class=c1>// 這邊允許使用 AutoMapper 直接映照欄位，如註解，但若 Sub Table 中只需要特定欄位的話，則建議使用此處範例使用的寫法</span>
+</span></span><span class=line><span class=cl>                            <span class=c1>// OneToManySubItems = this._mapper.Map&lt;IEnumerable&lt;OneToManySubTableDto&gt;&gt;(o.OneToManySubItems)</span>
+</span></span><span class=line><span class=cl>                            <span class=n>OneToManySubItems</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>OneToManySubItems</span><span class=p>.</span><span class=n>Select</span><span class=p>(</span><span class=n>m</span><span class=p>=&gt;</span><span class=k>new</span> <span class=n>OneToManySubTableDto</span>
+</span></span><span class=line><span class=cl>                            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                <span class=n>SubId</span> <span class=p>=</span> <span class=n>m</span><span class=p>.</span><span class=n>SubId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                <span class=n>MainId</span> <span class=p>=</span> <span class=n>m</span><span class=p>.</span><span class=n>MainId</span>
+</span></span><span class=line><span class=cl>                            <span class=p>}),</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                            <span class=c1>// OneToOneSubItem = this._mapper.Map&lt;OneToOneSubTableDto&gt;(o.OneToOneSubItem)</span>
+</span></span><span class=line><span class=cl>                            <span class=n>OneToOneSubItem</span> <span class=p>=</span> <span class=k>new</span> <span class=n>OneToOneSubTableDto</span>
+</span></span><span class=line><span class=cl>                            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                <span class=n>SubId</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>OneToOneSubItem</span><span class=p>.</span><span class=n>SubId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                <span class=n>MainId</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>OneToOneSubItem</span><span class=p>.</span><span class=n>MainId</span>
+</span></span><span class=line><span class=cl>                            <span class=p>})</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}).</span><span class=n>ToListAsync</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>前述兩種方式的混和寫法，動態調整 Db 出來的欄位，在依據需要組合成輸出用的 Dto
+此寫法彈性高，惟程式碼較複雜</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cs data-lang=cs><span class=line><span class=cl><span class=kd>private</span> <span class=kd>async</span> <span class=n>Task</span><span class=p>&lt;</span><span class=n>IEnumerable</span><span class=p>&lt;</span><span class=n>MainTableDto</span><span class=p>&gt;&gt;</span> <span class=n>GetAllMainTableDtos</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>var</span> <span class=n>mainTableList</span> <span class=p>=</span> <span class=k>await</span> <span class=k>this</span><span class=p>.</span><span class=n>_testContext</span><span class=p>.</span><span class=n>MainTables</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>AsNoTracking</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>Get</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>Include</span><span class=p>(</span><span class=n>o</span><span class=p>=&gt;</span><span class=n>o</span><span class=p>.</span><span class=n>OneToManySubItems</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>Include</span><span class=p>(</span><span class=n>o</span><span class=p>=&gt;</span><span class=n>o</span><span class=p>.</span><span class=n>OneToOneSubItem</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>Select</span><span class=p>(</span><span class=n>o</span><span class=p>=&gt;</span> <span class=k>new</span> <span class=n>MainTable</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                            <span class=n>MainId</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>MainId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                            <span class=n>OneToOneSubItem</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>OneToOneSubItem</span>
+</span></span><span class=line><span class=cl>                                            <span class=c1>//這邊不再另外設定 OneToMainSubItem 欄位，這樣觸發的 Sql 就會掠過 OneToOneSubItem 這個欄位</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>})</span>
+</span></span><span class=line><span class=cl>                                        <span class=p>.</span><span class=n>ToListAsync</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 若無其它需求，可直接使用 AutoMapper 進行資料映照並轉出</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=n>_mapper</span><span class=p>.</span><span class=n>Map</span><span class=p>&lt;</span><span class=n>IEnumerable</span><span class=p>&lt;</span><span class=n>MainTableDto</span><span class=p>&gt;&gt;(</span><span class=n>mainTableList</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>//==============================</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 不使用 AutoMapper 進行資料設定的方式，彈性較高，但是撰寫較麻煩</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>mainTableList</span><span class=p>.</span><span class=n>Select</span><span class=p>(</span><span class=n>o</span> <span class=p>=&gt;</span> <span class=k>new</span> <span class=n>MainTableDto</span>
+</span></span><span class=line><span class=cl>                        <span class=p>{</span>
+</span></span><span class=line><span class=cl>                            <span class=n>MainId</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>MainId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                            <span class=c1>// 因為前面沒有把 OneToManySubItem 叫出來，這邊就不設定 OneToManySubItem</span>
+</span></span><span class=line><span class=cl>                            <span class=c1>// 若仍保留 OneToManySubItem 欄位的設定，則必須注意 null 值問題</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                            <span class=c1>// OneToOneSubItem = this._mapper.Map&lt;OneToOneSubTableDto&gt;(o.OneToOneSubItem)</span>
+</span></span><span class=line><span class=cl>                            <span class=n>OneToOneSubItem</span> <span class=p>=</span> <span class=k>new</span> <span class=n>OneToOneSubTableDto</span>
+</span></span><span class=line><span class=cl>                            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                                <span class=n>SubId</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>OneToOneSubItem</span><span class=p>.</span><span class=n>SubId</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                <span class=n>MainId</span> <span class=p>=</span> <span class=n>o</span><span class=p>.</span><span class=n>OneToOneSubItem</span><span class=p>.</span><span class=n>MainId</span>
+</span></span><span class=line><span class=cl>                            <span class=p>})</span>
+</span></span><span class=line><span class=cl>                        <span class=p>}).</span><span class=n>ToListAsync</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul></div><h2></h2><div class=related-container><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/02/use-ef-core-to-join/>Use EF-Core to Join</a></h2></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新於 2023-11-19</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-mardown href=https://yuchia-wei.github.io/2022/02/ef-core-%E8%87%AA%E8%A8%82%E9%97%9C%E8%81%AF/index.md target=_blank rel="noopener noreferrer">閱讀原始文檔</a></span></div><div class=post-info-share><button title="分享到 Facebook" data-sharer=facebook data-url=https://yuchia-wei.github.io/2022/02/ef-core-%E8%87%AA%E8%A8%82%E9%97%9C%E8%81%AF/ data-hashtag=EFCore><span class="fab fa-facebook-square fa-fw"></span></button><button title="分享到 Line" data-sharer=line data-url=https://yuchia-wei.github.io/2022/02/ef-core-%E8%87%AA%E8%A8%82%E9%97%9C%E8%81%AF/ data-title="EF Core 自訂關聯"><span data-svg-src=https://yuchia-wei.github.io/lib/simple-icons/icons/line.min.svg></span></button><script>function shareOnMastodon(e,t){const o="share_mastodon_domain",i=localStorage.getItem(o)??"mastodon.social",n=prompt("Enter your Mastodon domain",i);if(n===null)return;localStorage.setItem(o,n);const a=e+`
+
+`+t,s=new URL("https://"+n);s.pathname="share",s.searchParams.append("text",a),window.open(s,"_blank","width=500,height=500,left=500,toolbar=0,status=0")}</script>
+<button title="分享到 Mastodon" onclick='shareOnMastodon("EF Core 自訂關聯","https://yuchia-wei.github.io/2022/02/ef-core-%E8%87%AA%E8%A8%82%E9%97%9C%E8%81%AF/")'><span class="fab fa-mastodon fa-fw"></span></button></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=https://yuchia-wei.github.io/tags/efcore/>EFCore</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://yuchia-wei.github.io/>主頁</a></span></section></div><div class=post-nav><a href=https://yuchia-wei.github.io/2022/02/use-ef-core-to-join/ class=prev rel=prev title="Use EF-Core to Join"><i class="fas fa-angle-left fa-fw"></i>Use EF-Core to Join</a>
+<a href=https://yuchia-wei.github.io/2022/02/kubernetes-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98-part.2-%E5%8F%A2%E9%9B%86%E5%88%9D%E5%A7%8B%E5%8C%96/ class=next rel=next title="Kubernetes 安裝筆記 part.2 : 叢集初始化">Kubernetes 安裝筆記 part.2 : 叢集初始化<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>&nbsp;|&nbsp;&nbsp;|&nbsp;</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://github.com/yuchia-wei target=_blank rel="noopener noreferrer">YuChia Wei</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class=footer-line></div><div class=footer-line></div></div></footer></div><div id=fixed-buttons><a href=#back-to-top id=back-to-top-button class=fixed-button title=回到頂部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看評論><i class="fas fa-comment fa-fw"></i></a></div><div class=assets><script type=text/javascript>window.config={code:{copyTitle:"複製到剪貼板",maxShownLines:10},comment:{},data:{"desktop-header-typeit":"小佑的筆記","mobile-header-typeit":"小佑的筆記"},sharerjs:!0,table:{sort:!0},typeit:{cursorChar:"|",cursorSpeed:1e3,data:{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},duration:-1,speed:100}}</script><script type=text/javascript src=https://yuchia-wei.github.io/lib/tablesort/tablesort.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/sharer/sharer.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/typeit/typeit.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/js/theme.min.js defer></script></div></body></html>

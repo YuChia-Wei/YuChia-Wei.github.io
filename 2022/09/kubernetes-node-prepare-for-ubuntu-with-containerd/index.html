@@ -1,0 +1,402 @@
+<!doctype html><html lang=zh-TW><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Kubernetes 環境準備 - ubuntu & containerd - -小佑-（&lt;ゝω·）キラbosh☆</title><meta name=Description content="最新版 Kubernetes 環境準備 - ubuntu 20.04 LTS & containerd 版本"><meta property="og:title" content="Kubernetes 環境準備 - ubuntu & containerd">
+<meta property="og:description" content="最新版 Kubernetes 環境準備 - ubuntu 20.04 LTS & containerd 版本"><meta property="og:type" content="article"><meta property="og:url" content="https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-ubuntu-with-containerd/"><meta property="og:image" content="https://yuchia-wei.github.io/images/avatar.jpg"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-09-16T23:00:00+08:00"><meta property="article:modified_time" content="2023-11-19T21:13:04+08:00"><meta property="og:site_name" content="-小佑-（<ゝω·）キラbosh☆"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yuchia-wei.github.io/images/avatar.jpg"><meta name=twitter:title content="Kubernetes 環境準備 - ubuntu & containerd"><meta name=twitter:description content="最新版 Kubernetes 環境準備 - ubuntu 20.04 LTS & containerd 版本"><meta name=application-name content="-小佑-（<ゝω·）キラbosh☆"><meta name=apple-mobile-web-app-title content="-小佑-（<ゝω·）キラbosh☆"><meta name=theme-color content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=https://yuchia-wei.github.io/favicon.ico><link rel=icon type=image/png sizes=32x32 href=https://yuchia-wei.github.io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://yuchia-wei.github.io/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=https://yuchia-wei.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yuchia-wei.github.io/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-ubuntu-with-containerd/><link rel=prev href=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-centos7-with-containerd/><link rel=next href=https://yuchia-wei.github.io/2023/02/use-dotnet-sdk-alpine-in-docker-file/><link rel=stylesheet href=https://yuchia-wei.github.io/css/main.css><link rel=stylesheet href=https://yuchia-wei.github.io/lib/normalize/normalize.min.css><link rel=stylesheet href=https://yuchia-wei.github.io/css/color.css><link rel=stylesheet href=https://yuchia-wei.github.io/css/style.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=https://yuchia-wei.github.io/lib/fontawesome-free/all.min.css><noscript><link rel=stylesheet href=https://yuchia-wei.github.io/lib/fontawesome-free/all.min.css></noscript><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=https://yuchia-wei.github.io/lib/animate/animate.min.css><noscript><link rel=stylesheet href=https://yuchia-wei.github.io/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Kubernetes 環境準備 - ubuntu \u0026 containerd","inLanguage":"zh-TW","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/yuchia-wei.github.io\/2022\/09\/kubernetes-node-prepare-for-ubuntu-with-containerd\/"},"image":["https:\/\/yuchia-wei.github.io\/images\/Apple-Devices-Preview.png"],"genre":"posts","keywords":"Install","wordcount":2397,"url":"https:\/\/yuchia-wei.github.io\/2022\/09\/kubernetes-node-prepare-for-ubuntu-with-containerd\/","datePublished":"2022-09-16T23:00:00+08:00","dateModified":"2023-11-19T21:13:04+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"YuChia, Wei","logo":{"@type":"ImageObject","url":"https:\/\/yuchia-wei.github.io\/images\/avatar.jpg","width":280,"height":270}},"author":{"@type":"Person","name":"YuChia Wei"},"description":"最新版 Kubernetes 環境準備 - ubuntu 20.04 LTS \u0026 containerd 版本"}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>function setTheme(e){document.body.setAttribute("theme",e),document.documentElement.style.setProperty("color-scheme",e==="light"?"light":"dark"),window.theme=e,window.isDark=window.theme!=="light"}function saveTheme(e){window.localStorage&&localStorage.setItem("theme",e)}function getMeta(e){const t=document.getElementsByTagName("meta");for(let n=0;n<t.length;n++)if(t[n].getAttribute("name")===e)return t[n];return""}if(window.localStorage&&localStorage.getItem("theme")){let e=localStorage.getItem("theme");e==="light"||e==="dark"||e==="black"?setTheme(e):setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}else"auto"==="light"||"auto"==="dark"||"auto"==="black"?(setTheme("auto"),saveTheme("auto")):(saveTheme("auto"),setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));let metaColors={light:"#f8f8f8",dark:"#252627",black:"#000000"};getMeta("theme-color").content=metaColors[document.body.getAttribute("theme")],window.switchThemeEventSet=new Set</script><div id=back-to-top></div><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://yuchia-wei.github.io/ title="-小佑-（<ゝω·）キラbosh☆"><span class=header-title-pre><i class='far fa-edit fa-fw'></i></span><span id=desktop-header-typeit class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://yuchia-wei.github.io/posts/>文章 </a><a class=menu-item href=https://yuchia-wei.github.io/tags/>標籤 </a><a class=menu-item href=https://yuchia-wei.github.io/categories/>分類 </a><a class=menu-item href=https://yuchia-wei.github.io/series/>系列文 </a><a class=menu-item href=https://yuchia-wei.github.io/authors/>作者 </a><a class=menu-item href=https://yuchia-wei.github.io/showcase/>作品 </a><a class=menu-item href=https://yuchia-wei.github.io/categories/documentation/>文件 </a><a class=menu-item href=https://yuchia-wei.github.io/about/>關於 </a><a class=menu-item href=https://github.com/YuChia-Wei title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw'></i> </a><a class=menu-item href=https://www.linkedin.com/in/yuchia-wei/ title=LinkedIn rel="noopener noreferrer" target=_blank><i class='fab fa-linkedin fa-fw'></i> </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item language" title=選擇語言>繁體中文 (臺灣)<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title=選擇語言 id=language-select-desktop onchange="location=this.value"><option value=/2022/09/kubernetes-node-prepare-for-ubuntu-with-containerd/ selected>繁體中文 (臺灣)</option></select>
+</a><a href=javascript:void(0); class="menu-item theme-select" title=切換主題><i class="fas fa-adjust fa-fw"></i>
+<select class=color-theme-select id=theme-select-desktop title=切換主題><option value=light></option><option value=dark></option><option value=black></option><option value=auto></option></select></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://yuchia-wei.github.io/ title="-小佑-（<ゝω·）キラbosh☆"><span class=header-title-pre><i class='far fa-edit fa-fw'></i></span><span id=mobile-header-typeit class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><a class=menu-item href=https://yuchia-wei.github.io/posts/ title>文章</a><a class=menu-item href=https://yuchia-wei.github.io/tags/ title>標籤</a><a class=menu-item href=https://yuchia-wei.github.io/categories/ title>分類</a><a class=menu-item href=https://yuchia-wei.github.io/series/ title>系列文</a><a class=menu-item href=https://yuchia-wei.github.io/authors/ title>作者</a><a class=menu-item href=https://yuchia-wei.github.io/showcase/ title>作品</a><a class=menu-item href=https://yuchia-wei.github.io/categories/documentation/ title>文件</a><a class=menu-item href=https://yuchia-wei.github.io/about/ title>關於</a><a class=menu-item href=https://github.com/YuChia-Wei title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw'></i></a><a class=menu-item href=https://www.linkedin.com/in/yuchia-wei/ title=LinkedIn rel="noopener noreferrer" target=_blank><i class='fab fa-linkedin fa-fw'></i></a><a href=javascript:void(0); class="menu-item theme-select" title=切換主題>
+<i class="fas fa-adjust fa-fw"></i>
+<select class=color-theme-select id=theme-select-mobile title=切換主題><option value=light></option><option value=dark></option><option value=black></option><option value=auto></option></select>
+</a><a href=javascript:void(0); class=menu-item title=選擇語言>繁體中文 (臺灣)<i class="fas fa-chevron-right fa-fw"></i>
+<select class=language-select title=選擇語言 onchange="location=this.value"><option value=/2022/09/kubernetes-node-prepare-for-ubuntu-with-containerd/ selected>繁體中文 (臺灣)</option></select></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目錄</h2><div class=toc-content id=toc-content-auto><nav id=TableOfContents><ul><li><a href=#安裝所需套件>安裝所需套件</a></li><li><a href=#啟用自動校正>啟用自動校正</a></li><li><a href=#參考>參考</a></li></ul><ul><li><a href=#核心套件安裝>核心套件安裝</a><ul><li><a href=#使用-apt-get-套件管理工具安裝>使用 apt-get 套件管理工具安裝</a></li><li><a href=#使用手動安裝>使用手動安裝</a></li></ul></li><li><a href=#調整設定檔>調整設定檔</a></li><li><a href=#建立-crictl-設定調整>建立 crictl 設定調整</a></li><li><a href=#啟動-containerd>啟動 containerd</a></li></ul><ul><li><a href=#master-node>Master node</a><ul><li><a href=#kubeconfig>kubeconfig</a><ul><li><a href=#bash-profile>bash profile</a></li><li><a href=#一般使用者-非-root-帳號>一般使用者 (非 root 帳號)</a></li></ul></li><li><a href=#single-node>single node</a></li></ul></li><li><a href=#weave-net-cni>Weave net CNI</a></li></ul></nav></div></div><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC","true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Kubernetes 環境準備 - ubuntu & containerd</h1><div class=post-meta><div class=post-meta-line><span class=post-author><span class="author fas fa-user-circle fa-fw"></span><a href=https://github.com/yuchia-wei title=Author target=_blank rel="noopener noreferrer author" class=author>YuChia Wei</a>
+</span>&nbsp;<span class=post-category></span>&nbsp;<span class=post-category>收錄於 <a href=https://yuchia-wei.github.io/categories/kubernetes/><i class="far fa-folder fa-fw"></i>Kubernetes</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2022-09-16>2022-09-16</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime=2023-11-19>2023-11-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;約 2397 字&nbsp;<i class="far fa-clock fa-fw"></i>&nbsp;預計閱讀 5 分鐘&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目錄</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#安裝所需套件>安裝所需套件</a></li><li><a href=#啟用自動校正>啟用自動校正</a></li><li><a href=#參考>參考</a></li></ul><ul><li><a href=#核心套件安裝>核心套件安裝</a><ul><li><a href=#使用-apt-get-套件管理工具安裝>使用 apt-get 套件管理工具安裝</a></li><li><a href=#使用手動安裝>使用手動安裝</a></li></ul></li><li><a href=#調整設定檔>調整設定檔</a></li><li><a href=#建立-crictl-設定調整>建立 crictl 設定調整</a></li><li><a href=#啟動-containerd>啟動 containerd</a></li></ul><ul><li><a href=#master-node>Master node</a><ul><li><a href=#kubeconfig>kubeconfig</a><ul><li><a href=#bash-profile>bash profile</a></li><li><a href=#一般使用者-非-root-帳號>一般使用者 (非 root 帳號)</a></li></ul></li><li><a href=#single-node>single node</a></li></ul></li><li><a href=#weave-net-cni>Weave net CNI</a></li></ul></nav></div></div><div class=content id=content><p>定期更新版 kubernetes 安裝筆記</p><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td>K8s:</td><td>v1.25.1</td></tr><tr><td>OS:</td><td>ubuntu server 20.04 LTS</td></tr><tr><td>cri:</td><td>containerd 1.6.8</td></tr><tr><td>Update Time</td><td>2022/09/17</td></tr></tbody></table></div></div></div><h1 id=ubuntu-根目錄磁區 class=headerLink><a href=#ubuntu-%e6%a0%b9%e7%9b%ae%e9%8c%84%e7%a3%81%e5%8d%80 class=header-mark></a>Ubuntu 根目錄磁區</h1><p>由於先前主要習慣是使用 CentOS7，在磁區格式上慣用的是 xfs 格式，所以我有特別調整根目錄磁區的格式化類型為 xfs，而非 ubuntu 預設的 ext4</p><p>我這邊另外收集了一些網路上針對 xfs / ext4 兩者的比較資訊，供需要的人參考評估</p><ul><li><a href=https://askubuntu.com/a/1384946 target=_blank rel="noopener noreferrer">StackExchange 上的一個針對 ubuntu 選擇 ext4 作為預設格式的原因回應</a></li><li><a href="https://www.ubuntu-tw.org/modules/newbb/viewtopic.php?viewmode=compact&amp;type=&amp;topic_id=13024&amp;forum=11" target=_blank rel="noopener noreferrer">ubuntu tw 上的一篇各格式比較表(2009 年的文章了)</a></li><li><a href=http://xiaqunfeng.cc/2017/07/06/XFS-vs-EXT4/ target=_blank rel="noopener noreferrer">XFS-vs-EXT4 的一篇簡中資源</a></li></ul><h1 id=主機校時 class=headerLink><a href=#%e4%b8%bb%e6%a9%9f%e6%a0%a1%e6%99%82 class=header-mark></a>主機校時</h1><h2 id=安裝所需套件 class=headerLink><a href=#%e5%ae%89%e8%a3%9d%e6%89%80%e9%9c%80%e5%a5%97%e4%bb%b6 class=header-mark></a>1 安裝所需套件</h2><ul><li><p>安裝檢查<div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>核心的同步服務是 ntp，所以裝 ntp 其實就夠了</div></div></div></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># dpkg -l 可以列出已安裝套件</span>
+</span></span><span class=line><span class=cl><span class=c1>#dpkg -l | grep ntpdate</span>
+</span></span><span class=line><span class=cl>dpkg -l <span class=p>|</span> grep ntp
+</span></span></code></pre></td></tr></table></div></div></li><li><p>安裝語法</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#sudo apt-get install ntpdate</span>
+</span></span><span class=line><span class=cl>sudo apt install ntp
+</span></span></code></pre></td></tr></table></div></div><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>在 ubuntu 中，用 apt / apt-get 安裝套件時會預設啟用 (至少我在撰寫本文時，都不用特別另外執行 <code>systemctl enable</code> 命令，安裝的服務就會自行啟動了)</div></div></div></li></ul><h2 id=啟用自動校正 class=headerLink><a href=#%e5%95%9f%e7%94%a8%e8%87%aa%e5%8b%95%e6%a0%a1%e6%ad%a3 class=header-mark></a>2 啟用自動校正</h2><ul><li><p>編輯設定檔</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo vi /etc/ntp.conf
+</span></span></code></pre></td></tr></table></div></div><p>把 server 區塊的設定調整一下，改成中華電信的校時服務</p><p><a href=https://www.stdtime.gov.tw/chinese/bulletin/NTP%20promo.txt target=_blank rel="noopener noreferrer">校時伺服器參考</a>
+<a href=https://www.pool.ntp.org/zone/tw target=_blank rel="noopener noreferrer">這邊有另外一組可以嘗試</a>
+<a href=https://vector.cool/ntp-server-taiwan/ target=_blank rel="noopener noreferrer">其他參考</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl># org linux time server
+</span></span><span class=line><span class=cl># pool 0.ubuntu.pool.ntp.org iburst
+</span></span><span class=line><span class=cl># pool 1.ubuntu.pool.ntp.org iburst
+</span></span><span class=line><span class=cl># pool 2.ubuntu.pool.ntp.org iburst
+</span></span><span class=line><span class=cl># pool 3.ubuntu.pool.ntp.org iburst
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl># taiwan time server
+</span></span><span class=line><span class=cl>pool tock.stdtime.gov.tw iburst
+</span></span><span class=line><span class=cl>pool watch.stdtime.gov.tw iburst
+</span></span><span class=line><span class=cl>pool time.stdtime.gov.tw iburst
+</span></span><span class=line><span class=cl>pool clock.stdtime.gov.tw iburst
+</span></span><span class=line><span class=cl>pool tick.stdtime.gov.tw iburst
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl># Use Ubuntu&#39;s ntp server as a fallback.
+</span></span><span class=line><span class=cl># pool ntp.ubuntu.com
+</span></span></code></pre></td></tr></table></div></div><p>改完需要重啟</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo vi /etc/ntp.conf
+</span></span></code></pre></td></tr></table></div></div><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>這邊可以自己評估要不要調整，因為在改設定檔前使用 <code>ntpq -p</code> 命令去查他使用了那些校時伺服器時，有看到使用台灣的位置，也許這個調整行為是多的？</div></div></div></li><li><p>確認服務狀態</p><p>ntp 在安裝後預設就會被啟用，因此可以用以下網路工具確認是否已開始監聽 UDP Port 123</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>netstat -tlunp
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 如果沒有安裝網路工具，可以用以下命令安裝</span>
+</span></span><span class=line><span class=cl>sudo apt install net-tools
+</span></span></code></pre></td></tr></table></div></div></li><li><p>其他參考命令</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 查看目前使用的校時伺服器狀態</span>
+</span></span><span class=line><span class=cl>sudo ntpq -p
+</span></span><span class=line><span class=cl><span class=c1># 啟動</span>
+</span></span><span class=line><span class=cl>sudo /etc/init.d/ntp start
+</span></span><span class=line><span class=cl><span class=c1># 重開</span>
+</span></span><span class=line><span class=cl>sudo /etc/init.d/ntp restart
+</span></span><span class=line><span class=cl><span class=c1># 停止</span>
+</span></span><span class=line><span class=cl>sudo /etc/init.d/ntp stop
+</span></span></code></pre></td></tr></table></div></div></li></ul><h2 id=參考 class=headerLink><a href=#%e5%8f%83%e8%80%83 class=header-mark></a>3 參考</h2><ul><li><a href=https://nknuahuang.wordpress.com/tutorials/%E6%9C%89%E9%97%9Cubuntu%E8%88%87wordpress%E6%95%99%E5%AD%B8/ubuntu%E6%8E%92%E7%A8%8B%E6%A0%A1%E6%99%82%E8%A8%AD%E5%AE%9A/ target=_blank rel="noopener noreferrer">參考 1</a></li><li><a href=https://blog.gtwang.org/linux/linux-ntp-installation-and-configuration-tutorial/ target=_blank rel="noopener noreferrer">參考 2</a></li><li><a href=http://simple-is-beauty.blogspot.com/2017/04/ubuntu-ntp.html target=_blank rel="noopener noreferrer">參考 3</a></li></ul><h1 id=containerd class=headerLink><a href=#containerd class=header-mark></a>containerd</h1><p><a href=https://www.bilibili.com/read/cv16292700/ target=_blank rel="noopener noreferrer">這邊筆記一個中國的 bili bili 連結</a></p><h2 id=核心套件安裝 class=headerLink><a href=#%e6%a0%b8%e5%bf%83%e5%a5%97%e4%bb%b6%e5%ae%89%e8%a3%9d class=header-mark></a>1 核心套件安裝</h2><ul><li><a href=https://www.itzgeek.com/how-tos/linux/ubuntu-how-tos/install-containerd-on-ubuntu-22-04.html target=_blank rel="noopener noreferrer">安裝參考</a></li></ul><h3 id=使用-apt-get-套件管理工具安裝 class=headerLink><a href=#%e4%bd%bf%e7%94%a8-apt-get-%e5%a5%97%e4%bb%b6%e7%ae%a1%e7%90%86%e5%b7%a5%e5%85%b7%e5%ae%89%e8%a3%9d class=header-mark></a>1.1 使用 apt-get 套件管理工具安裝</h3><p><a href=https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository target=_blank rel="noopener noreferrer">安裝參考 in docker doc</a></p><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>因為 containerd 的最新版也在 docker 的儲存庫中，所以直接使用 docker 的來源。
+使用套件安裝會自動啟用並且一起安裝需要的套件 <code>runc</code> 。</div></div></div><ul><li><p>更新 apt-get 的套件庫</p><ul><li><p>安裝需要的額外套件</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo apt-get update
+</span></span><span class=line><span class=cl>sudo apt-get install <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        ca-certificates <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        curl <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        gnupg <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        lsb-release
+</span></span></code></pre></td></tr></table></div></div></li><li><p>設定安裝套件需要的憑證資料</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo mkdir -p /etc/apt/keyrings
+</span></span><span class=line><span class=cl>curl -fsSL https://download.docker.com/linux/ubuntu/gpg <span class=p>|</span> sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=s2>&#34;deb [arch=</span><span class=k>$(</span>dpkg --print-architecture<span class=k>)</span><span class=s2> signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+</span></span></span><span class=line><span class=cl><span class=s2>    </span><span class=k>$(</span>lsb_release -cs<span class=k>)</span><span class=s2> stable&#34;</span> <span class=p>|</span> sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</span></span></code></pre></td></tr></table></div></div></li></ul></li><li><p>安裝 containerd</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo apt-get update
+</span></span><span class=line><span class=cl>sudo apt-get install containerd.io
+</span></span></code></pre></td></tr></table></div></div></li><li><p>需要指定版本可使用以下方式安裝</p><ul><li><p>列出可用的版本</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo apt-cache madison containerd.io
+</span></span></code></pre></td></tr></table></div></div></li><li><p>安裝指定版本</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo apt-get install containerd.io<span class=o>=</span>&lt;VERSION_STRING&gt;
+</span></span></code></pre></td></tr></table></div></div></li></ul></li></ul><h3 id=使用手動安裝 class=headerLink><a href=#%e4%bd%bf%e7%94%a8%e6%89%8b%e5%8b%95%e5%ae%89%e8%a3%9d class=header-mark></a>1.2 使用手動安裝</h3><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>這邊手動安裝僅作為整理記錄，我並未使用該方法安裝。
+手動安裝的好處是不用多設定、安裝一些額外的東西，使用哪種安裝方式就因人而異了。</div></div></div><ul><li><p>下載並設定 containerd</p><ul><li><p>containerd 於 2022-09-16 時的最新版下載連結</p><blockquote><p><a href=https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz target=_blank rel="noopener noreferrer">https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz</a></p></blockquote></li><li><p>下載並解壓縮</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>wget https://github.com/containerd/containerd/releases/download/v1.6.8/containerd-1.6.8-linux-amd64.tar.gz
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo tar Czxvf /usr/local containerd-1.6.8-linux-amd64.tar.gz
+</span></span></code></pre></td></tr></table></div></div></li><li><p>下載 systemd 使用的 service 執行檔</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo mv containerd.service /usr/lib/systemd/system/
+</span></span></code></pre></td></tr></table></div></div></li></ul></li><li><p>下載並設定 runc</p><ul><li><p>runc 於 2022-09-16 時的最新版下載連結</p><blockquote><p><a href=https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64 target=_blank rel="noopener noreferrer">https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64</a></p></blockquote></li><li><p>下載並安裝</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>wget https://github.com/opencontainers/runc/releases/download/v1.1.4/runc.amd64
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo install -m <span class=m>755</span> runc.amd64 /usr/local/sbin/runc
+</span></span></code></pre></td></tr></table></div></div></li></ul></li></ul><h2 id=調整設定檔 class=headerLink><a href=#%e8%aa%bf%e6%95%b4%e8%a8%ad%e5%ae%9a%e6%aa%94 class=header-mark></a>2 調整設定檔</h2><p>path: <code>/etc/containerd/config.toml</code></p><p>因為使用 安裝 containerd 時的預設設定檔長這樣</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-toml data-lang=toml><span class=line><span class=cl><span class=nx>disabled_plugins</span> <span class=p>=</span> <span class=p>[</span><span class=s2>&#34;cri&#34;</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>使用 containerd 內部的預設設定檔覆蓋後再去調整 <code>SystemdCgroup=true</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 如果使用手動安裝的話，會沒有這個設定檔與資料夾，需要先手動建立資料夾</span>
+</span></span><span class=line><span class=cl>sudo mkdir -p /etc/containerd/
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 輸出 containerd 的預設設定檔出來</span>
+</span></span><span class=line><span class=cl>containerd config default <span class=p>|</span> tee /etc/containerd/config.toml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 編輯該設定檔</span>
+</span></span><span class=line><span class=cl>vi /etc/containerd/config.toml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 預設設定的的 SystemdCgroup 設定為 false，改成 true 就可以了</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 或者也可以直接用 sed 處理</span>
+</span></span><span class=line><span class=cl>sudo sed -i <span class=s1>&#39;s/SystemdCgroup \= false/SystemdCgroup \= true/g&#39;</span> /etc/containerd/config.toml
+</span></span></code></pre></td></tr></table></div></div><p>設定 systemdCgroup = true (<a href=https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd target=_blank rel="noopener noreferrer">官方文件參考</a>)</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-toml data-lang=toml><span class=line><span class=cl><span class=p>[</span><span class=nx>plugins</span><span class=p>.</span><span class=s2>&#34;io.containerd.grpc.v1.cri&#34;</span><span class=p>.</span><span class=nx>containerd</span><span class=p>.</span><span class=nx>runtimes</span><span class=p>.</span><span class=nx>runc</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=nx>plugins</span><span class=p>.</span><span class=s2>&#34;io.containerd.grpc.v1.cri&#34;</span><span class=p>.</span><span class=nx>containerd</span><span class=p>.</span><span class=nx>runtimes</span><span class=p>.</span><span class=nx>runc</span><span class=p>.</span><span class=nx>options</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=nx>SystemdCgroup</span> <span class=p>=</span> <span class=kc>true</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=建立-crictl-設定調整 class=headerLink><a href=#%e5%bb%ba%e7%ab%8b-crictl-%e8%a8%ad%e5%ae%9a%e8%aa%bf%e6%95%b4 class=header-mark></a>3 建立 crictl 設定調整</h2><p>這個設定檔一開始不存在，需要自己建立並寫入以下內容</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>vi /etc/crictl.yaml
+</span></span></code></pre></td></tr></table></div></div><p>yaml 內容如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>runtime-endpoint</span><span class=p>:</span><span class=w> </span><span class=l>unix:///run/containerd/containerd.sock</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>image-endpoint</span><span class=p>:</span><span class=w> </span><span class=l>unix:///run/containerd/containerd.sock</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>timeout</span><span class=p>:</span><span class=w> </span><span class=m>10</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>debug</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=啟動-containerd class=headerLink><a href=#%e5%95%9f%e5%8b%95-containerd class=header-mark></a>4 啟動 containerd</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo systemctl daemon-reload
+</span></span><span class=line><span class=cl><span class=c1># 由於使用 apt-get 套件安裝的話會預設啟動，所以這邊建議使用重啟的命令</span>
+</span></span><span class=line><span class=cl>sudo systemctl restart containerd
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo systemctl <span class=nb>enable</span> --now containerd
+</span></span></code></pre></td></tr></table></div></div><h1 id=network-setting class=headerLink><a href=#network-setting class=header-mark></a>Network Setting</h1><p>ref: <a href=https://kubernetes.io/docs/setup/production-environment/container-runtimes/#install-and-configure-prerequisites target=_blank rel="noopener noreferrer">官方文件</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat <span class=s>&lt;&lt;EOF | sudo tee /etc/modules-load.d/k8s.conf
+</span></span></span><span class=line><span class=cl><span class=s>overlay
+</span></span></span><span class=line><span class=cl><span class=s>br_netfilter
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo modprobe overlay
+</span></span><span class=line><span class=cl>sudo modprobe br_netfilter
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># sysctl params required by setup, params persist across reboots</span>
+</span></span><span class=line><span class=cl>cat <span class=s>&lt;&lt;EOF | sudo tee /etc/sysctl.d/k8s.conf
+</span></span></span><span class=line><span class=cl><span class=s>net.bridge.bridge-nf-call-iptables  = 1
+</span></span></span><span class=line><span class=cl><span class=s>net.bridge.bridge-nf-call-ip6tables = 1
+</span></span></span><span class=line><span class=cl><span class=s>net.ipv4.ip_forward                 = 1
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Apply sysctl params without reboot</span>
+</span></span><span class=line><span class=cl>sudo sysctl --system
+</span></span></code></pre></td></tr></table></div></div><h1 id=disable-swap class=headerLink><a href=#disable-swap class=header-mark></a>Disable Swap</h1><p><a href=https://jasonlee.xyz/guan-bi-linux-swap-kong-jian/ target=_blank rel="noopener noreferrer">參考文件</a></p><ul><li><p>暫時關閉</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo swapoff -a
+</span></span></code></pre></td></tr></table></div></div><div class="details admonition warning open"><div class="details-summary admonition-title"><i class="icon fas fa-exclamation-triangle fa-fw"></i>警告<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>此命令僅是暫時性關閉，server 重開後仍會啟用 swap，因此需要搭配下一節的設定來完全關閉 swap</div></div></div></li><li><p>永久關閉 swap</p><ol><li><p>註解掉以下命令開啟的檔案中，含有 swap 字樣的行次</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo vim /etc/fstab
+</span></span></code></pre></td></tr></table></div></div></li><li><p>用 vim 開啟 <code>/etc/sysctl.conf</code> 檔案，並加入 <code>vm.swappiness=0</code></p><blockquote><p>有時候沒有設定此行也可以正常運行，但如果可以的話，關掉也許比較好</p></blockquote><p>新主機設定後此檔案應該會長這樣</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl># ...其他原本就存在的註解資料
+</span></span><span class=line><span class=cl>vm.swappiness=0
+</span></span></code></pre></td></tr></table></div></div></li></ol></li></ul><h1 id=kubernetes-cli--selinux-set class=headerLink><a href=#kubernetes-cli--selinux-set class=header-mark></a>Kubernetes CLI & SELinux Set</h1><p>ref: <a href=https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl target=_blank rel="noopener noreferrer">官方文件</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo apt-get update
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 這邊跟前面用套件安裝 containerd 的部分差了 apt-transport-https 這個套件，如果是用套件安裝 containerd 的話，可以考慮調整這條安裝命令</span>
+</span></span><span class=line><span class=cl>sudo apt-get install -y apt-transport-https ca-certificates curl
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main&#34;</span> <span class=p>|</span> sudo tee /etc/apt/sources.list.d/kubernetes.list
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo apt-get update
+</span></span><span class=line><span class=cl>sudo apt-get install -y kubelet kubeadm kubectl
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#指定版本</span>
+</span></span><span class=line><span class=cl><span class=c1>#sudo apt-get install -y kubelet=1.24.6-00 kubeadm=1.24.6-00 kubect</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#降版與指定版本</span>
+</span></span><span class=line><span class=cl><span class=c1>#更改版本記得 apt-mark unhold kubelet kubeadm kubectl</span>
+</span></span><span class=line><span class=cl><span class=c1>#sudo apt-get install -y --allow-downgrades kubelet=1.24.6-00 kubeadm=1.24.6-00 kubect</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 避免 apt-get 隨便更新相關套件</span>
+</span></span><span class=line><span class=cl>sudo apt-mark hold kubelet kubeadm kubectl
+</span></span></code></pre></td></tr></table></div></div><p>安裝完畢後可看到安裝了已下套件</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Setting up conntrack <span class=o>(</span>1:1.4.5-2<span class=o>)</span> ...
+</span></span><span class=line><span class=cl>Setting up kubectl <span class=o>(</span>1.25.1-00<span class=o>)</span> ...
+</span></span><span class=line><span class=cl>Setting up ebtables <span class=o>(</span>2.0.11-3build1<span class=o>)</span> ...
+</span></span><span class=line><span class=cl>Setting up socat <span class=o>(</span>1.7.3.3-2<span class=o>)</span> ...
+</span></span><span class=line><span class=cl>Setting up cri-tools <span class=o>(</span>1.25.0-00<span class=o>)</span> ...
+</span></span><span class=line><span class=cl>Setting up kubernetes-cni <span class=o>(</span>1.1.1-00<span class=o>)</span> ...
+</span></span><span class=line><span class=cl>Setting up kubelet <span class=o>(</span>1.25.1-00<span class=o>)</span> ...
+</span></span><span class=line><span class=cl>Created symlink /etc/systemd/system/multi-user.target.wants/kubelet.service → /lib/systemd/system/kubelet.service.
+</span></span><span class=line><span class=cl>Setting up kubeadm <span class=o>(</span>1.25.1-00<span class=o>)</span> ...
+</span></span><span class=line><span class=cl>Processing triggers <span class=k>for</span> man-db <span class=o>(</span>2.9.1-1<span class=o>)</span> ...
+</span></span></code></pre></td></tr></table></div></div><h1 id=kubernetes-cluster-init--join-command-use-kubeadm class=headerLink><a href=#kubernetes-cluster-init--join-command-use-kubeadm class=header-mark></a>kubernetes cluster init / join command (use kubeadm)</h1><ul><li><p>預先拉取需要的 Image</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo kubeadm config images pull
+</span></span></code></pre></td></tr></table></div></div></li><li><p>建立 kubernetes cluster</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo kubeadm init
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 指定 control-plane-endpoint</span>
+</span></span><span class=line><span class=cl>sudo kubeadm init --control-plane-endpoint<span class=o>=</span>&lt;control-plane-endpoint-domain&gt; <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>                  --upload-certs
+</span></span><span class=line><span class=cl><span class=c1>#sudo kubeadm init --control-plane-endpoint=k8s-ubuntu-containerd.mshome.net \</span>
+</span></span><span class=line><span class=cl><span class=c1>#                  --upload-certs</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 指定版本</span>
+</span></span><span class=line><span class=cl><span class=c1># 由於指定版本會需要對應版本的 kubeadm / kubelet 等工具，記得安裝對應版本的工具</span>
+</span></span><span class=line><span class=cl>sudo kubeadm init --control-plane-endpoint<span class=o>=</span>&lt;control-plane-endpoint-domain&gt; <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>                  --upload-certs
+</span></span><span class=line><span class=cl>                  --kubernetes-version<span class=o>=</span>v1.24.6
+</span></span></code></pre></td></tr></table></div></div></li><li><p>reset kubernetes cluster</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl drain &lt;node name&gt; --delete-emptydir-data --force --ignore-daemonsets
+</span></span><span class=line><span class=cl><span class=c1>#kubectl drain &lt;node name&gt; --delete-emptydir-data --force --ignore-daemonsets</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo kubeadm reset
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 清除資料</span>
+</span></span><span class=line><span class=cl>sudo rm -rf /etc/cni/net.d
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重設 ip table</span>
+</span></span><span class=line><span class=cl>sudo iptables -F <span class=o>&amp;&amp;</span> iptables -t nat -F <span class=o>&amp;&amp;</span> iptables -t mangle -F <span class=o>&amp;&amp;</span> iptables -X
+</span></span></code></pre></td></tr></table></div></div></li><li><p>join kubernetes cluster</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo kubeadm join &lt;control-endpoint&gt;:6443 --token &lt;token&gt; <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        --discovery-token-ca-cert-hash sha256:&lt;hash&gt;
+</span></span></code></pre></td></tr></table></div></div></li></ul><h1 id=other-setting class=headerLink><a href=#other-setting class=header-mark></a>Other Setting</h1><h2 id=master-node class=headerLink><a href=#master-node class=header-mark></a>1 Master node</h2><h3 id=kubeconfig class=headerLink><a href=#kubeconfig class=header-mark></a>1.1 kubeconfig</h3><h4 id=bash-profile class=headerLink><a href=#bash-profile class=header-mark></a>1.1.1 bash profile</h4><p>Master Node 在 kubeadm join / init 結束之後，可以考慮將 kubeconfig 檔案設定在 bash_profile 裡面</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>export</span> <span class=nv>KUBECONFIG</span><span class=o>=</span>/etc/kubernetes/admin.conf
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>vi .bash_profile
+</span></span></code></pre></td></tr></table></div></div><p>.bash_profile 的設定</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-gdscript3 data-lang=gdscript3><span class=line><span class=cl><span class=c1># .bash_profile</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Get the aliases and functions</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=p>[</span> <span class=o>-</span><span class=n>f</span> <span class=o>~/.</span><span class=n>bashrc</span> <span class=p>];</span> <span class=n>then</span>
+</span></span><span class=line><span class=cl>        <span class=o>.</span> <span class=o>~/.</span><span class=n>bashrc</span>
+</span></span><span class=line><span class=cl><span class=n>fi</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># User specific environment and startup programs</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>PATH</span><span class=o>=$</span><span class=n>PATH</span><span class=p>:</span><span class=o>$</span><span class=n>HOME</span><span class=o>/</span><span class=n>bin</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>export</span> <span class=n>PATH</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>export</span> <span class=n>KUBECONFIG</span><span class=o>=/</span><span class=n>etc</span><span class=o>/</span><span class=n>kubernetes</span><span class=o>/</span><span class=n>admin</span><span class=o>.</span><span class=n>conf</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=一般使用者-非-root-帳號 class=headerLink><a href=#%e4%b8%80%e8%88%ac%e4%bd%bf%e7%94%a8%e8%80%85-%e9%9d%9e-root-%e5%b8%b3%e8%99%9f class=header-mark></a>1.1.2 一般使用者 (非 root 帳號)</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mkdir -p <span class=nv>$HOME</span>/.kube
+</span></span><span class=line><span class=cl>sudo cp -i /etc/kubernetes/admin.conf <span class=nv>$HOME</span>/.kube/config
+</span></span><span class=line><span class=cl>sudo chown <span class=k>$(</span>id -u<span class=k>)</span>:<span class=k>$(</span>id -g<span class=k>)</span> <span class=nv>$HOME</span>/.kube/config
+</span></span></code></pre></td></tr></table></div></div><h3 id=single-node class=headerLink><a href=#single-node class=header-mark></a>1.2 single node</h3><p>如果需要在 master 上部署服務的話，需要使用以下命令</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#kubectl taint nodes --all node-role.kubernetes.io/control-plane-</span>
+</span></span><span class=line><span class=cl>kubectl taint nodes --all node-role.kubernetes.io/control-plane- node-role.kubernetes.io/master-
+</span></span></code></pre></td></tr></table></div></div><h2 id=weave-net-cni class=headerLink><a href=#weave-net-cni class=header-mark></a>2 Weave net CNI</h2><p>如果是正在建立叢集，就會需要另外安裝 CNI ( Container Network Interface )，這邊採用 Weave net CNI</p><ul><li><p>直接安裝</p><p><a href=https://www.weave.works/docs/net/latest/kubernetes/kube-addon/#-installation target=_blank rel="noopener noreferrer">weave net doc - install</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#kubectl apply -f &#34;https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d &#39;\n&#39;)&#34;</span>
+</span></span><span class=line><span class=cl>kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+</span></span><span class=line><span class=cl><span class=c1># 1.24.6</span>
+</span></span><span class=line><span class=cl><span class=c1>#kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=Q2xpZW50IFZlcnNpb246IHZlcnNpb24uSW5mb3tNYWpvcjoiMSIsIE1pbm9yOiIyNSIsIEdpdFZlcnNpb246InYxLjI1LjIiLCBHaXRDb21taXQ6IjU4MzU1NDRjYTU2OGI3NTdhOGVjYWU1YzE1M2YzMTdlNTczNjcwMGUiLCBHaXRUcmVlU3RhdGU6ImNsZWFuIiwgQnVpbGREYXRlOiIyMDIyLTA5LTIxVDE0OjMzOjQ5WiIsIEdvVmVyc2lvbjoiZ28xLjE5LjEiLCBDb21waWxlcjoiZ2MiLCBQbGF0Zm9ybToibGludXgvYW1kNjQifQpLdXN0b21pemUgVmVyc2lvbjogdjQuNS43ClNlcnZlciBWZXJzaW9uOiB2ZXJzaW9uLkluZm97TWFqb3I6IjEiLCBNaW5vcjoiMjQiLCBHaXRWZXJzaW9uOiJ2MS4yNC42IiwgR2l0Q29tbWl0OiJiMzliZjE0OGNkNjU0NTk5YTUyZTg2NzQ4NWMwMmM0ZjlkMjhiMzEyIiwgR2l0VHJlZVN0YXRlOiJjbGVhbiIsIEJ1aWxkRGF0ZToiMjAyMi0wOS0yMVQxMzoxMjowNFoiLCBHb1ZlcnNpb246ImdvMS4xOC42IiwgQ29tcGlsZXI6ImdjIiwgUGxhdGZvcm06ImxpbnV4L2FtZDY0In0K</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>如果要特別調整網段</p><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>由於發現官方的安裝語法於 2022-10-11 時發現有變動，以下命令待測試</div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply -f <span class=s2>&#34;https://cloud.weave.works/k8s/net?k8s-version=</span><span class=k>$(</span>kubectl version <span class=p>|</span> base64 <span class=p>|</span> tr -d <span class=s1>&#39;\n&#39;</span><span class=k>)</span><span class=s2>&amp;env.IPALLOC_RANGE=172.30.0.0/16&#34;</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>清除安裝</p><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>由於發現官方的安裝語法於 2022-10-11 時發現有變動，以下命令待測試</div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl delete -f <span class=s2>&#34;https://cloud.weave.works/k8s/net?k8s-version=</span><span class=k>$(</span>kubectl version <span class=p>|</span> base64 <span class=p>|</span> tr -d <span class=s1>&#39;\n&#39;</span><span class=k>)</span><span class=s2>&#34;</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><h1 id=網段資料參考 class=headerLink><a href=#%e7%b6%b2%e6%ae%b5%e8%b3%87%e6%96%99%e5%8f%83%e8%80%83 class=header-mark></a>網段資料參考</h1><p>全預設 weave-net cni 的 kubernetes cluster 網段</p><table><thead><tr><th>Used For</th><th>Subnet</th><th>Genmask</th><th>Start</th><th>End</th></tr></thead><tbody><tr><td>Kubernetes Pod Subnet (Weave-cni)</td><td>10.32.0.0/12</td><td>255.240.0.0</td><td>10.32.0.1</td><td>10.47.255.254</td></tr><tr><td>Kubernetes Service Subnet</td><td>10.96.0.0/12</td><td>255.240.0.0</td><td>10.96.0.1</td><td>10.111.255.254</td></tr></tbody></table></div><h2></h2><div class=related-container><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-centos7-with-containerd/>Kubernetes 環境準備 - centos7 & containerd</a></h2></div><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-centos7-with-docker/>Kubernetes 環境準備 - centos7 & docker</a></h2></div><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/05/argocd-install/>ArgoCD install use kustomizaion</a></h2></div><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/04/istio-%E9%99%84%E5%B8%B6%E7%9A%84-plugin-%E5%AE%89%E8%A3%9D/>Istio 附帶的 Plugin 安裝</a></h2></div><div class=related-item-container><h2 class=related-title><a href=https://yuchia-wei.github.io/2022/04/argocd-%E5%AE%89%E8%A3%9D%E7%AD%86%E8%A8%98/>ArgoCD 安裝筆記</a></h2></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新於 2023-11-19</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-mardown href=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-ubuntu-with-containerd/index.md target=_blank rel="noopener noreferrer">閱讀原始文檔</a></span></div><div class=post-info-share><button title="分享到 Facebook" data-sharer=facebook data-url=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-ubuntu-with-containerd/ data-hashtag=Install><span class="fab fa-facebook-square fa-fw"></span></button><button title="分享到 Line" data-sharer=line data-url=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-ubuntu-with-containerd/ data-title="Kubernetes 環境準備 - ubuntu & containerd"><span data-svg-src=https://yuchia-wei.github.io/lib/simple-icons/icons/line.min.svg></span></button><script>function shareOnMastodon(e,t){const o="share_mastodon_domain",i=localStorage.getItem(o)??"mastodon.social",n=prompt("Enter your Mastodon domain",i);if(n===null)return;localStorage.setItem(o,n);const a=e+`
+
+`+t,s=new URL("https://"+n);s.pathname="share",s.searchParams.append("text",a),window.open(s,"_blank","width=500,height=500,left=500,toolbar=0,status=0")}</script>
+<button title="分享到 Mastodon" onclick='shareOnMastodon("Kubernetes 環境準備 - ubuntu & containerd","https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-ubuntu-with-containerd/")'><span class="fab fa-mastodon fa-fw"></span></button></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=https://yuchia-wei.github.io/tags/install/>Install</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://yuchia-wei.github.io/>主頁</a></span></section></div><div class=post-nav><a href=https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-centos7-with-containerd/ class=prev rel=prev title="Kubernetes 環境準備 - centos7 & containerd"><i class="fas fa-angle-left fa-fw"></i>Kubernetes 環境準備 - centos7 & containerd</a>
+<a href=https://yuchia-wei.github.io/2023/02/use-dotnet-sdk-alpine-in-docker-file/ class=next rel=next title="在 dockerfile 內使用 alpine 的 dotnet sdk image 建置 dotnet 服務">在 dockerfile 內使用 alpine 的 dotnet sdk image 建置 dotnet 服務<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>&nbsp;|&nbsp;&nbsp;|&nbsp;</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://github.com/yuchia-wei target=_blank rel="noopener noreferrer">YuChia Wei</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class=footer-line></div><div class=footer-line></div></div></footer></div><div id=fixed-buttons><a href=#back-to-top id=back-to-top-button class=fixed-button title=回到頂部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看評論><i class="fas fa-comment fa-fw"></i></a></div><div class=assets><script type=text/javascript>window.config={code:{copyTitle:"複製到剪貼板",maxShownLines:10},comment:{},data:{"desktop-header-typeit":"小佑的筆記","mobile-header-typeit":"小佑的筆記"},sharerjs:!0,table:{sort:!0},typeit:{cursorChar:"|",cursorSpeed:1e3,data:{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},duration:-1,speed:100}}</script><script type=text/javascript src=https://yuchia-wei.github.io/lib/tablesort/tablesort.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/sharer/sharer.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/typeit/typeit.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/js/theme.min.js defer></script></div></body></html>
