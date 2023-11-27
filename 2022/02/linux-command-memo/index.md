@@ -1,7 +1,7 @@
 # Linux Command Memo
 
 
-ssh 遠端到 linux server (CentOS) 時常用的指令筆記
+ssh 遠端到 linux server 時常用的指令筆記
 
 <!--more-->
 
