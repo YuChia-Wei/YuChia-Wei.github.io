@@ -56,7 +56,7 @@ private IQueryable<OutPutEntity> JointToOutPutEntity(
                                 // Join 的第三個參數為 TableB 中要用來處理匹配判斷的欄位
                                 tableB => new { tableB.SessionName, tableB.AreaName},
                                 (tableA , tableB) => new { tableA, tableB });
-    
+
     //=====非 Method 寫法如下=======
     return from tableAData in tableADataList
                  join tableBData in tableBDataList on new
@@ -131,3 +131,4 @@ private IQueryable<OutPutEntity> JointToOutPutEntity(
                                      (tableAData, tablaBData) => new { tableAData, tableBData });
 }
 ```
+

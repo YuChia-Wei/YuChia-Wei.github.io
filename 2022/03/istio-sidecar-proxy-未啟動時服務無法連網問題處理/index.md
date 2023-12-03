@@ -36,3 +36,4 @@ trustDomain: cluster.local
 * [Istio Github Issues#33911](https://github.com/istio/istio/issues/33911#issuecomment-877010732)
 * [Istio Github Issues#11130](https://github.com/istio/istio/issues/11130)
 * [知乎-关于Istio Proxy生命周期的两点注意事项](https://zhuanlan.zhihu.com/p/369301902)
+

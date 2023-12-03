@@ -43,7 +43,7 @@ spec:
     - istioGateway
   hosts:
     - host.example.com
-  http:  
+  http:
     - headers:
         request:
           set:
@@ -79,3 +79,4 @@ spec:
 =====
 
 未來是希望可以將身分認證等功能全數移往 istio / kubernetes 上的 resource 上設定，降低軟體中對這些網路設定的倚賴，這感覺才有用到 istio 的功能，不然我都不知道我為什麼要使用 istio 了。
+

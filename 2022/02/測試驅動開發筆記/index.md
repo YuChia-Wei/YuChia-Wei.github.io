@@ -19,7 +19,7 @@
 
 **此章節為我流理解法，並非正式的方法介紹，若有任何錯誤的地方還請不吝指教！**
 
-### Outside In 
+### Outside In
 
 * 各種別稱
     - Top Down
@@ -98,3 +98,4 @@ TDD 在開發時會使用底下的流程進行開發
 * [Working Effectively with Legacy Code : 管理、修改、重構遺留程式碼的藝術](https://www.tenlong.com.tw/products/9789864344000)
 * [重構｜改善既有程式的設計, 2/e (繁中平裝版)](https://www.tenlong.com.tw/products/9789865021832)
 * [重構與模式 (Refactoring to Patterns)](https://www.tenlong.com.tw/products/9787115297259)
+

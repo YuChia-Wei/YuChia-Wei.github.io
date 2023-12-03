@@ -1,7 +1,7 @@
 # Kubernetes 環境準備 - ubuntu & containerd
 
 
-定期更新版 kubernetes 安裝筆記
+kubernetes 安裝筆記
 
 {{<admonition info>}}
 |             |                         |
