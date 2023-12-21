@@ -84,7 +84,7 @@ ssh 遠端到 linux server 時常用的指令筆記
 
 ## 倚賴套件安裝
 
-* 網路工具 (netstat 需要的套件))
+* 網路工具 (netstat 需要的套件)
 
 ```bash
 # yum install net-tools     [On CentOS/RHEL]

@@ -12,6 +12,13 @@
     openssl s_client -connect {domain}:443 -showcerts
     ```
 1. 找出輸出文字中的所有憑證區塊，並存到 /usr/local/share/ca-certificates/*.crt
+    ```bash
+    cat <<EOF | sudo tee /usr/local/share/ca-certificates/your-cert.crt
+    -----BEGIN CERTIFICATE-----
+
+    -----END CERTIFICATE-----
+    EOF
+    ```
 1. 執行憑證更新
     ```bash
     sudo update-ca-certificates

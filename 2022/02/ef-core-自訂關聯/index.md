@@ -7,11 +7,11 @@ EF Power Tool 產生的 Entity / Entity Configuration 預設皆有引入 partial
 
 本篇範例為 一對一、一對多 的設定方式。</br>
 
-<!--more-->
-
 {{<admonition warning >}}
 TODO: 示範用程式碼待補 (2022-02-06)
 {{</admonition >}}
+
+<!--more-->
 
 # 使用的專案結構
 
@@ -31,12 +31,12 @@ TODO: 示範用程式碼待補 (2022-02-06)
 
 - 專案內部資料夾說明
 
-    資料夾 | 說明
-    --- | ---
-    Configurations | EF Power Tool 產生的 Entity 設定檔
-    Entities | EF Power Tool 產生的 Entity 檔
-    [db name]Context.cs | EF Core DbContext By Db
-    efpt.config.json | EF Core Power Tool 設定檔，除了進行 Entity 增減外，不應有其它變更
+    | 資料夾              | 說明                                                              |
+    |---------------------|-------------------------------------------------------------------|
+    | Configurations      | EF Power Tool 產生的 Entity 設定檔                                |
+    | Entities            | EF Power Tool 產生的 Entity 檔                                    |
+    | [db name]Context.cs | EF Core DbContext By Db                                           |
+    | efpt.config.json    | EF Core Power Tool 設定檔，除了進行 Entity 增減外，不應有其它變更 |
 
 
 **以下操作均使用 EF Core 5.0**
