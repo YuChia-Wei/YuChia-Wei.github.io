@@ -1,4 +1,5 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>-小佑-（&lt;ゝω·）キラbosh☆</title><link>https://yuchia-wei.github.io/</link><description>（&lt;ゝω·）キラbosh☆</description><generator>Hugo -- gohugo.io</generator><language>zh-TW</language><managingEditor>h42279@gmail.com (YuChia Wei)</managingEditor><webMaster>h42279@gmail.com (YuChia Wei)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 17 Dec 2023 14:40:00 +0800</lastBuildDate><atom:link href="https://yuchia-wei.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>JetBrains Rider 常用擴充套件</title><link>https://yuchia-wei.github.io/2023/12/jetbrains-rider-%E5%B8%B8%E7%94%A8%E6%93%B4%E5%85%85%E5%A5%97%E4%BB%B6/</link><pubDate>Sun, 17 Dec 2023 14:40:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/12/jetbrains-rider-%E5%B8%B8%E7%94%A8%E6%93%B4%E5%85%85%E5%A5%97%E4%BB%B6/</guid><description>JetBrains Rider 常用擴充套件</description></item><item><title>程式碼重構 - 基本概念</title><link>https://yuchia-wei.github.io/2023/12/%E7%A8%8B%E5%BC%8F%E7%A2%BC%E9%87%8D%E6%A7%8B-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</link><pubDate>Sun, 17 Dec 2023 14:40:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/12/%E7%A8%8B%E5%BC%8F%E7%A2%BC%E9%87%8D%E6%A7%8B-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</guid><description><![CDATA[<p>重構：在不影響程式碼邏輯的前提下進行程式碼修改的行為</p>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>-小佑-（&lt;ゝω·）キラbosh☆</title><link>https://yuchia-wei.github.io/</link><description>（&lt;ゝω·）キラbosh☆</description><generator>Hugo -- gohugo.io</generator><language>zh-TW</language><managingEditor>h42279@gmail.com (YuChia Wei)</managingEditor><webMaster>h42279@gmail.com (YuChia Wei)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 31 Dec 2023 15:36:28 +0800</lastBuildDate><atom:link href="https://yuchia-wei.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>2023 年度回顧</title><link>https://yuchia-wei.github.io/2023/12/2023-yearly-retrospective/</link><pubDate>Sun, 31 Dec 2023 15:36:28 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/12/2023-yearly-retrospective/</guid><description>&lt;p>今天是 2023 年的最後一天，趁著今年還沒結束，來回顧一下我在今年的技術發展狀況吧~&lt;/p>
+&lt;p>不過，因為這一年都沒怎麼寫 blog (都靠 hackmd 紀錄筆記)，希望不要不小心把去年的事情寫成今年 XD&lt;/p></description></item><item><title>JetBrains Rider 常用擴充套件</title><link>https://yuchia-wei.github.io/2023/12/jetbrains-rider-%E5%B8%B8%E7%94%A8%E6%93%B4%E5%85%85%E5%A5%97%E4%BB%B6/</link><pubDate>Sun, 17 Dec 2023 14:40:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/12/jetbrains-rider-%E5%B8%B8%E7%94%A8%E6%93%B4%E5%85%85%E5%A5%97%E4%BB%B6/</guid><description>JetBrains Rider 常用擴充套件</description></item><item><title>程式碼重構 - 基本概念</title><link>https://yuchia-wei.github.io/2023/12/%E7%A8%8B%E5%BC%8F%E7%A2%BC%E9%87%8D%E6%A7%8B-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</link><pubDate>Sun, 17 Dec 2023 14:40:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/12/%E7%A8%8B%E5%BC%8F%E7%A2%BC%E9%87%8D%E6%A7%8B-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</guid><description><![CDATA[<p>重構：在不影響程式碼邏輯的前提下進行程式碼修改的行為</p>
 <p>重構行為應使用 IDE 隨附的重構命令處理，以降低人為操作的錯誤，且盡可能在進行重構前加入測試，避免重構後發生錯誤。</p>
 <p>本文記錄我過往經驗中，對於重構的一些想法與概念，也有在上課後老師所提供的想法。</p>]]></description></item><item><title>vim memo</title><link>https://yuchia-wei.github.io/2023/11/vim-memo/</link><pubDate>Wed, 29 Nov 2023 08:47:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/11/vim-memo/</guid><description><![CDATA[<p>我在幾年前上過 91 的極速開發後，已經習慣在日常的文字編輯工具以及開發工具中啟用 vim 來進行文字編輯，這邊我將先前整理的一些資料整理出來以方便查閱。</p>
 <p><strong>詳細內容以及我自己使用的 vimrc 檔案後續會再安排公開，目前先讓我繼續鎖在私有git 裡面吧</strong></p>]]></description></item><item><title>Openssl Tls Version Downgrade in Dockerfile</title><link>https://yuchia-wei.github.io/2023/11/openssl-tls-version-downgrade-in-dockerfile/</link><pubDate>Mon, 27 Nov 2023 21:50:12 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/11/openssl-tls-version-downgrade-in-dockerfile/</guid><description>&lt;p>此邊筆記紀錄如何在 dockerfile 中設定 debian 11/12 與 alpine 中的 openSSL config 檔案&lt;/p></description></item><item><title>在 linux 安裝 ssl 中間人憑證</title><link>https://yuchia-wei.github.io/2023/11/%E5%9C%A8-linux-%E5%AE%89%E8%A3%9D-ssl-%E4%B8%AD%E9%96%93%E4%BA%BA%E6%86%91%E8%AD%89/</link><pubDate>Mon, 27 Nov 2023 21:33:26 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/11/%E5%9C%A8-linux-%E5%AE%89%E8%A3%9D-ssl-%E4%B8%AD%E9%96%93%E4%BA%BA%E6%86%91%E8%AD%89/</guid><description><![CDATA[<p>如果網路環境會被替換憑證，且暫時無法取得憑證時，可以利用本篇筆記所記錄的方式處理憑證</p>
@@ -70,40 +71,6 @@
 <tr>
 <td>Update Time</td>
 <td>2022/09/14</td>
-</tr>
-</tbody>
-</table>
-</div>
-        </div>
-    </div>]]></description></item><item><title>Kubernetes 環境準備 - centos7 &amp; docker</title><link>https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-centos7-with-docker/</link><pubDate>Tue, 13 Sep 2022 21:11:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-centos7-with-docker/</guid><description><![CDATA[<p>定期更新版 kubernetes 安裝筆記</p>
-<div class="details admonition info open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content"><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>K8s:</td>
-<td>v1.25.0</td>
-</tr>
-<tr>
-<td>OS:</td>
-<td>CentOs 7 (kernel = 3.10.1)</td>
-</tr>
-<tr>
-<td>cri:</td>
-<td>docker 20.10.18</td>
-</tr>
-<tr>
-<td>Update Time</td>
-<td>2022/09/12</td>
 </tr>
 </tbody>
 </table>
