@@ -1,4 +1,7 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>-小佑-（&lt;ゝω·）キラbosh☆</title><link>https://yuchia-wei.github.io/</link><description>（&lt;ゝω·）キラbosh☆</description><generator>Hugo -- gohugo.io</generator><language>zh-TW</language><managingEditor>h42279@gmail.com (YuChia Wei)</managingEditor><webMaster>h42279@gmail.com (YuChia Wei)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 31 Dec 2023 15:36:28 +0800</lastBuildDate><atom:link href="https://yuchia-wei.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>2023 年度回顧</title><link>https://yuchia-wei.github.io/2023/12/2023-yearly-retrospective/</link><pubDate>Sun, 31 Dec 2023 15:36:28 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/12/2023-yearly-retrospective/</guid><description>&lt;p>今天是 2023 年的最後一天，趁著今年還沒結束，來回顧一下我在今年的技術發展狀況吧~&lt;/p>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>-小佑-（&lt;ゝω·）キラbosh☆</title><link>https://yuchia-wei.github.io/</link><description>（&lt;ゝω·）キラbosh☆</description><generator>Hugo -- gohugo.io</generator><language>zh-TW</language><managingEditor>h42279@gmail.com (YuChia Wei)</managingEditor><webMaster>h42279@gmail.com (YuChia Wei)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 28 Jan 2024 21:22:29 +0800</lastBuildDate><atom:link href="https://yuchia-wei.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>建立 RKE2 叢集並且安裝 Rancher / istio</title><link>https://yuchia-wei.github.io/2024/01/%E5%BB%BA%E7%AB%8B-rke2-%E5%8F%A2%E9%9B%86%E4%B8%A6%E4%B8%94%E5%AE%89%E8%A3%9D-rancher-/-istio/</link><pubDate>Sun, 28 Jan 2024 21:22:29 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2024/01/%E5%BB%BA%E7%AB%8B-rke2-%E5%8F%A2%E9%9B%86%E4%B8%A6%E4%B8%94%E5%AE%89%E8%A3%9D-rancher-/-istio/</guid><description><![CDATA[<p>我初期在公司建立地端 Kubernetes 叢集以進行 POC 時，都是使用 kubeadm 這套官方工具進行的 (我早期文章就是基於此撰寫的)。</p>
+<p>但是當需要將 Kubernetes 拓展到其他單位時，那相對複雜的安裝與管理方式卻是第一個難以躍過的門檻。</p>
+<p>因此，後續改用 RKE2 建立，並且導入 Rancher 進行 Kubernetes 叢集管理。從 2022 年末使用至今，由於我們公司的運用情境相對簡單，因此沒出現太多難以處理的問題。</p>
+<p>這篇紀錄我的 RKE2 + Rancher 的安裝命令，主要內容都是依據 iThome Kubernetes Summit 2022 時我參與的 SUSE 工作坊講師提供的資訊進行調整，並適度的加上一些說明。</p>]]></description></item><item><title>2023 年度回顧</title><link>https://yuchia-wei.github.io/2023/12/2023-yearly-retrospective/</link><pubDate>Sun, 31 Dec 2023 15:36:28 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/12/2023-yearly-retrospective/</guid><description>&lt;p>今天是 2023 年的最後一天，趁著今年還沒結束，來回顧一下我在今年的技術發展狀況吧~&lt;/p>
 &lt;p>不過，因為這一年都沒怎麼寫 blog (都靠 hackmd 紀錄筆記)，希望不要不小心把去年的事情寫成今年 XD&lt;/p></description></item><item><title>JetBrains Rider 常用擴充套件</title><link>https://yuchia-wei.github.io/2023/12/jetbrains-rider-%E5%B8%B8%E7%94%A8%E6%93%B4%E5%85%85%E5%A5%97%E4%BB%B6/</link><pubDate>Sun, 17 Dec 2023 14:40:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/12/jetbrains-rider-%E5%B8%B8%E7%94%A8%E6%93%B4%E5%85%85%E5%A5%97%E4%BB%B6/</guid><description>JetBrains Rider 常用擴充套件</description></item><item><title>程式碼重構 - 基本概念</title><link>https://yuchia-wei.github.io/2023/12/%E7%A8%8B%E5%BC%8F%E7%A2%BC%E9%87%8D%E6%A7%8B-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</link><pubDate>Sun, 17 Dec 2023 14:40:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/12/%E7%A8%8B%E5%BC%8F%E7%A2%BC%E9%87%8D%E6%A7%8B-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</guid><description><![CDATA[<p>重構：在不影響程式碼邏輯的前提下進行程式碼修改的行為</p>
 <p>重構行為應使用 IDE 隨附的重構命令處理，以降低人為操作的錯誤，且盡可能在進行重構前加入測試，避免重構後發生錯誤。</p>
 <p>本文記錄我過往經驗中，對於重構的一些想法與概念，也有在上課後老師所提供的想法。</p>]]></description></item><item><title>vim memo</title><link>https://yuchia-wei.github.io/2023/11/vim-memo/</link><pubDate>Wed, 29 Nov 2023 08:47:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2023/11/vim-memo/</guid><description><![CDATA[<p>我在幾年前上過 91 的極速開發後，已經習慣在日常的文字編輯工具以及開發工具中啟用 vim 來進行文字編輯，這邊我將先前整理的一些資料整理出來以方便查閱。</p>
@@ -37,40 +40,6 @@
 <tr>
 <td>Update Time</td>
 <td>2022/09/17</td>
-</tr>
-</tbody>
-</table>
-</div>
-        </div>
-    </div>]]></description></item><item><title>Kubernetes 環境準備 - centos7 &amp; containerd</title><link>https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-centos7-with-containerd/</link><pubDate>Tue, 13 Sep 2022 23:00:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2022/09/kubernetes-node-prepare-for-centos7-with-containerd/</guid><description><![CDATA[<p>定期更新版 kubernetes 安裝筆記</p>
-<div class="details admonition info open">
-        <div class="details-summary admonition-title">
-            <i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i>
-        </div>
-        <div class="details-content">
-            <div class="admonition-content"><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>K8s:</td>
-<td>v1.25.0</td>
-</tr>
-<tr>
-<td>OS:</td>
-<td>CentOs 7 (kernel = 3.10.1)</td>
-</tr>
-<tr>
-<td>cri:</td>
-<td>containerd 1.6.8-3.1.el7</td>
-</tr>
-<tr>
-<td>Update Time</td>
-<td>2022/09/14</td>
 </tr>
 </tbody>
 </table>

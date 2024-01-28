@@ -1,0 +1,345 @@
+<!doctype html><html lang=zh-TW><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>建立 RKE2 叢集並且安裝 Rancher / istio - -小佑-（&lt;ゝω·）キラbosh☆</title><meta name=Description content="（<ゝω·）キラbosh☆"><meta property="og:title" content="建立 RKE2 叢集並且安裝 Rancher / istio">
+<meta property="og:description" content="我初期在公司建立地端 Kubernetes 叢集以進行 POC 時，都是使用 kubeadm 這套官方工具進行的 (我早期文章就是基於此撰寫的)。
+但是當需要將 Kubernetes 拓展到其他單位時，那相對複雜的安裝與管理方式卻是第一個難以躍過的門檻。
+因此，後續改用 RKE2 建立，並且導入 Rancher 進行 Kubernetes 叢集管理。從 2022 年末使用至今，由於我們公司的運用情境相對簡單，因此沒出現太多難以處理的問題。
+這篇紀錄我的 RKE2 + Rancher 的安裝命令，主要內容都是依據 iThome Kubernetes Summit 2022 時我參與的 SUSE 工作坊講師提供的資訊進行調整，並適度的加上一些說明。"><meta property="og:type" content="article"><meta property="og:url" content="https://yuchia-wei.github.io/2024/01/%E5%BB%BA%E7%AB%8B-rke2-%E5%8F%A2%E9%9B%86%E4%B8%A6%E4%B8%94%E5%AE%89%E8%A3%9D-rancher-/-istio/"><meta property="og:image" content="https://yuchia-wei.github.io/images/avatar.jpg"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-01-28T21:22:29+08:00"><meta property="article:modified_time" content="2024-01-28T23:38:52+08:00"><meta property="og:site_name" content="-小佑-（<ゝω·）キラbosh☆"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yuchia-wei.github.io/images/avatar.jpg"><meta name=twitter:title content="建立 RKE2 叢集並且安裝 Rancher / istio"><meta name=twitter:description content="我初期在公司建立地端 Kubernetes 叢集以進行 POC 時，都是使用 kubeadm 這套官方工具進行的 (我早期文章就是基於此撰寫的)。
+但是當需要將 Kubernetes 拓展到其他單位時，那相對複雜的安裝與管理方式卻是第一個難以躍過的門檻。
+因此，後續改用 RKE2 建立，並且導入 Rancher 進行 Kubernetes 叢集管理。從 2022 年末使用至今，由於我們公司的運用情境相對簡單，因此沒出現太多難以處理的問題。
+這篇紀錄我的 RKE2 + Rancher 的安裝命令，主要內容都是依據 iThome Kubernetes Summit 2022 時我參與的 SUSE 工作坊講師提供的資訊進行調整，並適度的加上一些說明。"><meta name=application-name content="-小佑-（<ゝω·）キラbosh☆"><meta name=apple-mobile-web-app-title content="-小佑-（<ゝω·）キラbosh☆"><meta name=theme-color content="#f8f8f8"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=https://yuchia-wei.github.io/favicon.ico><link rel=icon type=image/png sizes=32x32 href=https://yuchia-wei.github.io/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=https://yuchia-wei.github.io/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=https://yuchia-wei.github.io/apple-touch-icon.png><link rel=mask-icon href=https://yuchia-wei.github.io/safari-pinned-tab.svg color=#5bbad5><link rel=canonical href=https://yuchia-wei.github.io/2024/01/%E5%BB%BA%E7%AB%8B-rke2-%E5%8F%A2%E9%9B%86%E4%B8%A6%E4%B8%94%E5%AE%89%E8%A3%9D-rancher-/-istio/><link rel=prev href=https://yuchia-wei.github.io/2023/12/2023-yearly-retrospective/><link rel=stylesheet href=https://yuchia-wei.github.io/css/main.css><link rel=stylesheet href=https://yuchia-wei.github.io/lib/normalize/normalize.min.css><link rel=stylesheet href=https://yuchia-wei.github.io/css/color.css><link rel=stylesheet href=https://yuchia-wei.github.io/css/style.min.css><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=https://yuchia-wei.github.io/lib/fontawesome-free/all.min.css><noscript><link rel=stylesheet href=https://yuchia-wei.github.io/lib/fontawesome-free/all.min.css></noscript><link rel=preload as=style onload='this.onload=null,this.rel="stylesheet"' href=https://yuchia-wei.github.io/lib/animate/animate.min.css><noscript><link rel=stylesheet href=https://yuchia-wei.github.io/lib/animate/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"建立 RKE2 叢集並且安裝 Rancher / istio","inLanguage":"zh-TW","mainEntityOfPage":{"@type":"WebPage","@id":"https://yuchia-wei.github.io/2024/01/%E5%BB%BA%E7%AB%8B-rke2-%E5%8F%A2%E9%9B%86%E4%B8%A6%E4%B8%94%E5%AE%89%E8%A3%9D-rancher-/-istio/"},"image":["https://yuchia-wei.github.io/images/Apple-Devices-Preview.png"],"genre":"posts","wordcount":1613,"url":"https://yuchia-wei.github.io/2024/01/%E5%BB%BA%E7%AB%8B-rke2-%E5%8F%A2%E9%9B%86%E4%B8%A6%E4%B8%94%E5%AE%89%E8%A3%9D-rancher-/-istio/","datePublished":"2024-01-28T21:22:29+08:00","dateModified":"2024-01-28T23:38:52+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"YuChia, Wei","logo":{"@type":"ImageObject","url":"https://yuchia-wei.github.io/images/avatar.jpg","width":280,"height":270}},"author":{"@type":"Person","name":"YuChia Wei"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>function setTheme(e){document.body.setAttribute("theme",e),document.documentElement.style.setProperty("color-scheme",e==="light"?"light":"dark"),window.theme=e,window.isDark=window.theme!=="light"}function saveTheme(e){window.localStorage&&localStorage.setItem("theme",e)}function getMeta(e){const t=document.getElementsByTagName("meta");for(let n=0;n<t.length;n++)if(t[n].getAttribute("name")===e)return t[n];return""}if(window.localStorage&&localStorage.getItem("theme")){let e=localStorage.getItem("theme");e==="light"||e==="dark"||e==="black"?setTheme(e):setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}else"auto"==="light"||"auto"==="dark"||"auto"==="black"?(setTheme("auto"),saveTheme("auto")):(saveTheme("auto"),setTheme(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));let metaColors={light:"#f8f8f8",dark:"#252627",black:"#000000"};getMeta("theme-color").content=metaColors[document.body.getAttribute("theme")],window.switchThemeEventSet=new Set</script><div id=back-to-top></div><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://yuchia-wei.github.io/ title="-小佑-（<ゝω·）キラbosh☆"><span class=header-title-pre><i class='far fa-edit fa-fw'></i></span><span id=desktop-header-typeit class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://yuchia-wei.github.io/posts/>文章 </a><a class=menu-item href=https://yuchia-wei.github.io/tags/>標籤 </a><a class=menu-item href=https://yuchia-wei.github.io/categories/>分類 </a><a class=menu-item href=https://yuchia-wei.github.io/series/>系列 </a><a class=menu-item href=https://yuchia-wei.github.io/showcase/>作品 </a><a class=menu-item href=https://yuchia-wei.github.io/categories/documentation/>文件 </a><a class=menu-item href=https://yuchia-wei.github.io/about/>關於 </a><a class=menu-item href=https://github.com/YuChia-Wei title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw'></i> </a><a class=menu-item href=https://www.linkedin.com/in/yuchia-wei/ title=LinkedIn rel="noopener noreferrer" target=_blank><i class='fab fa-linkedin fa-fw'></i> </a><span class="menu-item delimiter"></span><a href=javascript:void(0); class="menu-item theme-select" title=切換主題>
+<i class="fas fa-adjust fa-fw"></i>
+<select class=color-theme-select id=theme-select-desktop title=切換主題><option value=light></option><option value=dark></option><option value=black></option><option value=auto></option></select></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://yuchia-wei.github.io/ title="-小佑-（<ゝω·）キラbosh☆"><span class=header-title-pre><i class='far fa-edit fa-fw'></i></span><span id=mobile-header-typeit class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><a class=menu-item href=https://yuchia-wei.github.io/posts/ title>文章</a><a class=menu-item href=https://yuchia-wei.github.io/tags/ title>標籤</a><a class=menu-item href=https://yuchia-wei.github.io/categories/ title>分類</a><a class=menu-item href=https://yuchia-wei.github.io/series/ title>系列</a><a class=menu-item href=https://yuchia-wei.github.io/showcase/ title>作品</a><a class=menu-item href=https://yuchia-wei.github.io/categories/documentation/ title>文件</a><a class=menu-item href=https://yuchia-wei.github.io/about/ title>關於</a><a class=menu-item href=https://github.com/YuChia-Wei title=GitHub rel="noopener noreferrer" target=_blank><i class='fab fa-github fa-fw'></i></a><a class=menu-item href=https://www.linkedin.com/in/yuchia-wei/ title=LinkedIn rel="noopener noreferrer" target=_blank><i class='fab fa-linkedin fa-fw'></i></a><a href=javascript:void(0); class="menu-item theme-select" title=切換主題>
+<i class="fas fa-adjust fa-fw"></i>
+<select class=color-theme-select id=theme-select-mobile title=切換主題><option value=light></option><option value=dark></option><option value=black></option><option value=auto></option></select></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目錄</h2><div class=toc-content id=toc-content-auto><nav id=TableOfContents><ul><li><a href=#運作環境>運作環境</a></li><li><a href=#first-node>First Node</a><ul><li><a href=#download-rke2-install-file>download rke2 install file</a></li><li><a href=#create-rke2-config>Create RKE2 Config</a></li><li><a href=#run-install>Run Install</a></li><li><a href=#set-config-and-kubectl>Set Config and Kubectl</a></li><li><a href=#get-rke2-token>Get rke2 token</a></li></ul></li><li><a href=#other-master-node>Other Master Node</a><ul><li><a href=#create-rke2-config-1>Create rke2 Config</a></li></ul></li><li><a href=#uninstall>uninstall</a></li></ul><ul><li><a href=#helm>Helm</a></li><li><a href=#helm-repo>Helm Repo</a></li><li><a href=#istio>istio</a></li><li><a href=#cert-manager>cert-manager</a></li><li><a href=#rancher>rancher</a><ul><li><a href=#basic-install>basic install</a></li><li><a href=#set-istio>set istio</a></li></ul></li></ul></nav></div></div><script>document.getElementsByTagName("main")[0].setAttribute("autoTOC","true")</script><article class="page single"><h1 class="single-title animate__animated animate__flipInX">建立 RKE2 叢集並且安裝 Rancher / istio</h1><div class=post-meta><div class=post-meta-line><span class=post-author><span class="author fas fa-user-circle fa-fw"></span><a href=https://github.com/yuchia-wei title=Author target=_blank rel="noopener noreferrer author" class=author>YuChia Wei</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2024-01-28>2024-01-28</time>&nbsp;<i class="far fa-edit fa-fw"></i>&nbsp;<time datetime=2024-01-28>2024-01-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;約 1613 字&nbsp;<i class="far fa-clock fa-fw"></i>&nbsp;預計閱讀 4 分鐘&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目錄</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#運作環境>運作環境</a></li><li><a href=#first-node>First Node</a><ul><li><a href=#download-rke2-install-file>download rke2 install file</a></li><li><a href=#create-rke2-config>Create RKE2 Config</a></li><li><a href=#run-install>Run Install</a></li><li><a href=#set-config-and-kubectl>Set Config and Kubectl</a></li><li><a href=#get-rke2-token>Get rke2 token</a></li></ul></li><li><a href=#other-master-node>Other Master Node</a><ul><li><a href=#create-rke2-config-1>Create rke2 Config</a></li></ul></li><li><a href=#uninstall>uninstall</a></li></ul><ul><li><a href=#helm>Helm</a></li><li><a href=#helm-repo>Helm Repo</a></li><li><a href=#istio>istio</a></li><li><a href=#cert-manager>cert-manager</a></li><li><a href=#rancher>rancher</a><ul><li><a href=#basic-install>basic install</a></li><li><a href=#set-istio>set istio</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>我初期在公司建立地端 Kubernetes 叢集以進行 POC 時，都是使用 kubeadm 這套官方工具進行的 (我早期文章就是基於此撰寫的)。</p><p>但是當需要將 Kubernetes 拓展到其他單位時，那相對複雜的安裝與管理方式卻是第一個難以躍過的門檻。</p><p>因此，後續改用 RKE2 建立，並且導入 Rancher 進行 Kubernetes 叢集管理。從 2022 年末使用至今，由於我們公司的運用情境相對簡單，因此沒出現太多難以處理的問題。</p><p>這篇紀錄我的 RKE2 + Rancher 的安裝命令，主要內容都是依據 iThome Kubernetes Summit 2022 時我參與的 SUSE 工作坊講師提供的資訊進行調整，並適度的加上一些說明。</p><h1 id=rke2-install class=headerLink><a href=#rke2-install class=header-mark></a>RKE2 Install</h1><h2 id=運作環境 class=headerLink><a href=#%e9%81%8b%e4%bd%9c%e7%92%b0%e5%a2%83 class=header-mark></a>1 運作環境</h2><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content><table><thead><tr><th></th><th></th><th></th></tr></thead><tbody><tr><td>OS</td><td>Ubuntu 20.04</td><td></td></tr><tr><td>RKE2</td><td>v1.24.11+rke2r1</td><td>應配合 Rancher 選擇版本</td></tr><tr><td>Rancher</td><td>v2.7.9</td><td>應配合 RKE2 選擇版本</td></tr></tbody></table></div></div></div><h2 id=first-node class=headerLink><a href=#first-node class=header-mark></a>2 First Node</h2><h3 id=download-rke2-install-file class=headerLink><a href=#download-rke2-install-file class=header-mark></a>2.1 download rke2 install file</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1>#預設不給 type 就是 server 了，所以不用特地給 type</span>
+</span></span><span class=line><span class=cl><span class=c1>#curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=&#34;server&#34; sh -</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>curl -sfL https://get.rke2.io --output install.sh
+</span></span><span class=line><span class=cl>chmod +x install.sh
+</span></span></code></pre></td></tr></table></div></div><h3 id=create-rke2-config class=headerLink><a href=#create-rke2-config class=header-mark></a>2.2 Create RKE2 Config</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo mkdir -p /etc/rancher/rke2/
+</span></span><span class=line><span class=cl>cat <span class=s>&lt;&lt;EOF | sudo tee /etc/rancher/rke2/config.yaml
+</span></span></span><span class=line><span class=cl><span class=s># 主機名稱
+</span></span></span><span class=line><span class=cl><span class=s>node-name:
+</span></span></span><span class=line><span class=cl><span class=s>  - &#34;rke2-node-01&#34;
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s># k8s 各主機溝通用的憑證簽章
+</span></span></span><span class=line><span class=cl><span class=s>tls-san:
+</span></span></span><span class=line><span class=cl><span class=s>- rke2-node-01          # node host
+</span></span></span><span class=line><span class=cl><span class=s>- rke2-node-01.local.vm # node host domain
+</span></span></span><span class=line><span class=cl><span class=s>- rke2-cluster.local.vm # k8s cluster api server domain
+</span></span></span><span class=line><span class=cl><span class=s>- 1.1.1.1               # k8s cluster api server domain 的 vip，看參考資料多半都有設定
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>#如果要做純 k8s master 的話可已加入以下設定，RKE2 預設是混合 NODE
+</span></span></span><span class=line><span class=cl><span class=s>#node-taint:
+</span></span></span><span class=line><span class=cl><span class=s>#  - &#34;CriticalAddinsonly=true:NoExecute&#34;
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>#以下參數所有 master node 都要相同
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s># 由於我的環境主要使用 istio，因此關掉 nginx 的 ingress
+</span></span></span><span class=line><span class=cl><span class=s>disable: rke2-ingress-nginx
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>cni:
+</span></span></span><span class=line><span class=cl><span class=s>- cilium
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=run-install class=headerLink><a href=#run-install class=header-mark></a>2.3 Run Install</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo <span class=nv>INSTALL_RKE2_CHANNEL</span><span class=o>=</span>v1.24.11+rke2r1 ./install.sh
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>PATH</span><span class=o>=</span><span class=nv>$PATH</span>:/opt/rke2/bin
+</span></span><span class=line><span class=cl>sudo systemctl <span class=nb>enable</span> rke2-server
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#這邊執行後會要等一下</span>
+</span></span><span class=line><span class=cl>sudo systemctl start rke2-server
+</span></span></code></pre></td></tr></table></div></div><h3 id=set-config-and-kubectl class=headerLink><a href=#set-config-and-kubectl class=header-mark></a>2.4 Set Config and Kubectl</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mkdir .kube
+</span></span><span class=line><span class=cl>sudo cp /etc/rancher/rke2/rke2.yaml .kube/config
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#如果不是用 root 登入的話，需要另外給予權限</span>
+</span></span><span class=line><span class=cl><span class=c1>#sudo chown rancher .kube/config</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo cp /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/
+</span></span></code></pre></td></tr></table></div></div><h3 id=get-rke2-token class=headerLink><a href=#get-rke2-token class=header-mark></a>2.5 Get rke2 token</h3><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>這邊是用來給其他 Master Node 用的，如果只打算建立一台 Master Node，則可以忽略此步驟</div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo cat /var/lib/rancher/rke2/server/token
+</span></span></code></pre></td></tr></table></div></div><h2 id=other-master-node class=headerLink><a href=#other-master-node class=header-mark></a>3 Other Master Node</h2><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>基本流程大致一樣，只有 config 會有些許差異，因此此節僅保留差異處</div></div></div><h3 id=create-rke2-config-1 class=headerLink><a href=#create-rke2-config-1 class=header-mark></a>3.1 Create rke2 Config</h3><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>config 最大的差異是在第二台以後的 master 都需要加上 token / server 等欄位</div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo mkdir -p /etc/rancher/rke2/
+</span></span><span class=line><span class=cl>cat <span class=s>&lt;&lt;EOF | sudo tee /etc/rancher/rke2/config.yaml
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>token: --
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>#這邊 server 有人用第一台主機的 domain，有人用叢集 domain，只要能連上主要的 master 主機並使用 9345 port 即可
+</span></span></span><span class=line><span class=cl><span class=s>#port 的部分 RKE2 預設使用 9345，但是仍有開通 6443 來供一般使用
+</span></span></span><span class=line><span class=cl><span class=s>server: https://rke2-node-01.local.vm:9345
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s># 主機名稱
+</span></span></span><span class=line><span class=cl><span class=s>node-name:
+</span></span></span><span class=line><span class=cl><span class=s>  - &#34;rke2-node-02&#34;
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s># k8s 各主機溝通用的憑證簽章
+</span></span></span><span class=line><span class=cl><span class=s>tls-san:
+</span></span></span><span class=line><span class=cl><span class=s>- rke2-node-02          # node host
+</span></span></span><span class=line><span class=cl><span class=s>- rke2-node-02.local.vm # node host domain
+</span></span></span><span class=line><span class=cl><span class=s>- rke2-cluster.local.vm # k8s cluster api server domain
+</span></span></span><span class=line><span class=cl><span class=s>- 1.1.1.1               # k8s cluster api server domain 的 vip，看參考資料多半都有設定
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>#如果要做純 k8s master 的話可已加入以下設定，RKE2 預設是混合 NODE
+</span></span></span><span class=line><span class=cl><span class=s>#node-taint:
+</span></span></span><span class=line><span class=cl><span class=s>#  - &#34;CriticalAddinsonly=true:NoExecute&#34;
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>#以下參數所有 master node 都要相同
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s># 由於我的環境主要使用 istio，因此關掉 nginx 的 ingress
+</span></span></span><span class=line><span class=cl><span class=s>disable: rke2-ingress-nginx
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>cni:
+</span></span></span><span class=line><span class=cl><span class=s>- cilium
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=uninstall class=headerLink><a href=#uninstall class=header-mark></a>4 uninstall</h2><ul><li><a href=https://docs.rke2.io/install/linux_uninstall/ target=_blank rel="noopener noreferrer">官方解安裝文件</a></li></ul><p>ubuntu
+直接執行 <code>/usr/local/bin/rke2-uninstall.sh</code> 就好，輕鬆愜意，會把所有自訂設定等資料全部清空，所以設定檔記得留備份</p><p>centos
+直接執行 <code>/usr/bin/rke2-uninstall.sh</code> 就好，輕鬆愜意，會把所有自訂設定等資料全部清空，所以設定檔記得留備份</p><h1 id=istio--rancher-等其他服務安裝 class=headerLink><a href=#istio--rancher-%e7%ad%89%e5%85%b6%e4%bb%96%e6%9c%8d%e5%8b%99%e5%ae%89%e8%a3%9d class=header-mark></a>Istio / Rancher 等其他服務安裝</h1><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>由於後續的操作都會需要連上 kubernetes，因此請記得運用 <a href=#set-config-and-kubectl rel>Set Config and Kubectl</a> 章節中的命令將工具與設定檔抓出來</div></div></div><h2 id=helm class=headerLink><a href=#helm class=header-mark></a>1 Helm</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+</span></span><span class=line><span class=cl>chmod <span class=m>700</span> get_helm.sh
+</span></span><span class=line><span class=cl>./get_helm.sh
+</span></span></code></pre></td></tr></table></div></div><h2 id=helm-repo class=headerLink><a href=#helm-repo class=header-mark></a>2 Helm Repo</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>helm repo add istio https://istio-release.storage.googleapis.com/charts
+</span></span><span class=line><span class=cl>helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+</span></span><span class=line><span class=cl>helm repo add jetstack https://charts.jetstack.io
+</span></span><span class=line><span class=cl>helm repo update
+</span></span></code></pre></td></tr></table></div></div><h2 id=istio class=headerLink><a href=#istio class=header-mark></a>3 istio</h2><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>這邊只安裝 istio 的基礎工具，ingress 以及其他配合 rancher 的設定會跟 rancher 的安裝一起進行</div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl create namespace istio-system
+</span></span><span class=line><span class=cl>helm install istio-base istio/base -n istio-system --wait
+</span></span><span class=line><span class=cl>helm install istiod istio/istiod -n istio-system --wait
+</span></span></code></pre></td></tr></table></div></div><h2 id=cert-manager class=headerLink><a href=#cert-manager class=header-mark></a>4 cert-manager</h2><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content><ul><li><p><a href=https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/resources/upgrade-cert-manager target=_blank rel="noopener noreferrer">rancher latest version doc</a></p><blockquote><p>rancher 官方有說明目前最新版本對於 cert-manager 的版本測試狀況，可依據自己的需求進行相關版本調整</p></blockquote></li><li><p>如果網路環境有硬體可以處理外部憑證，可以忽略此套件的安裝，並且在安裝 rancher 時使用外部憑證 (並搭配無憑證設定的 istio ingress)</p></li></ul></div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.7.1/cert-manager.crds.yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.7.1 --wait
+</span></span></code></pre></td></tr></table></div></div><h2 id=rancher class=headerLink><a href=#rancher class=header-mark></a>5 rancher</h2><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw"></i>信息<i class="details-icon fas fa-angle-right fa-fw"></i></div><div class=details-content><div class=admonition-content>這邊配合前面安裝的 RKE2 版本而使用 2.7.9 的 Rancher</div></div></div><h3 id=basic-install class=headerLink><a href=#basic-install class=header-mark></a>5.1 basic install</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl create namespace cattle-system
+</span></span><span class=line><span class=cl>helm install rancher rancher-stable/rancher --namespace cattle-system --set <span class=nv>hostname</span><span class=o>=</span>my-rancher.local.vm --version 2.7.9
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># use external tls</span>
+</span></span><span class=line><span class=cl><span class=c1># helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname=my-rancher.local.vm --version 2.7.9 --set external-tls</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=set-istio class=headerLink><a href=#set-istio class=header-mark></a>5.2 set istio</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>helm install istio-ingressgateway istio/gateway -n cattle-system --wait
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sudo mkdir -p ~/istio-setting
+</span></span><span class=line><span class=cl>cat <span class=s>&lt;&lt;EOF | sudo tee ~/istio-setting/gateway.yaml
+</span></span></span><span class=line><span class=cl><span class=s>apiVersion: networking.istio.io/v1beta1
+</span></span></span><span class=line><span class=cl><span class=s>kind: Gateway
+</span></span></span><span class=line><span class=cl><span class=s>metadata:
+</span></span></span><span class=line><span class=cl><span class=s>  name: rancher-gateway
+</span></span></span><span class=line><span class=cl><span class=s>  namespace: cattle-system
+</span></span></span><span class=line><span class=cl><span class=s>spec:
+</span></span></span><span class=line><span class=cl><span class=s>  selector:
+</span></span></span><span class=line><span class=cl><span class=s>    istio: ingressgateway
+</span></span></span><span class=line><span class=cl><span class=s>  servers:
+</span></span></span><span class=line><span class=cl><span class=s>    - hosts:
+</span></span></span><span class=line><span class=cl><span class=s>        - my-rancher.local.vm
+</span></span></span><span class=line><span class=cl><span class=s>      port:
+</span></span></span><span class=line><span class=cl><span class=s>        name: http
+</span></span></span><span class=line><span class=cl><span class=s>        number: 80
+</span></span></span><span class=line><span class=cl><span class=s>        protocol: HTTP
+</span></span></span><span class=line><span class=cl><span class=s>    # 如果是使用外部憑證的話，這邊設定可以省去或是要另外調整
+</span></span></span><span class=line><span class=cl><span class=s>    - port:
+</span></span></span><span class=line><span class=cl><span class=s>        number: 443
+</span></span></span><span class=line><span class=cl><span class=s>        name: https-443
+</span></span></span><span class=line><span class=cl><span class=s>        protocol: HTTPS
+</span></span></span><span class=line><span class=cl><span class=s>      hosts:
+</span></span></span><span class=line><span class=cl><span class=s>        - my-rancher.local.vm
+</span></span></span><span class=line><span class=cl><span class=s>      tls:
+</span></span></span><span class=line><span class=cl><span class=s>        # mode: PASSTHROUGH
+</span></span></span><span class=line><span class=cl><span class=s>        mode: SIMPLE
+</span></span></span><span class=line><span class=cl><span class=s>        credentialName: cattle-system/tls-rancher-ingress
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>cat <span class=s>&lt;&lt;EOF | sudo tee ~/istio-setting/virtualservice.yaml
+</span></span></span><span class=line><span class=cl><span class=s>apiVersion: networking.istio.io/v1beta1
+</span></span></span><span class=line><span class=cl><span class=s>kind: VirtualService
+</span></span></span><span class=line><span class=cl><span class=s>metadata:
+</span></span></span><span class=line><span class=cl><span class=s>  name: rancher-vs
+</span></span></span><span class=line><span class=cl><span class=s>  namespace: cattle-system
+</span></span></span><span class=line><span class=cl><span class=s>spec:
+</span></span></span><span class=line><span class=cl><span class=s>  gateways:
+</span></span></span><span class=line><span class=cl><span class=s>    - rancher-gateway
+</span></span></span><span class=line><span class=cl><span class=s>  hosts:
+</span></span></span><span class=line><span class=cl><span class=s>    - my-rancher.local.vm
+</span></span></span><span class=line><span class=cl><span class=s>  http:
+</span></span></span><span class=line><span class=cl><span class=s>    - headers:
+</span></span></span><span class=line><span class=cl><span class=s>        request:
+</span></span></span><span class=line><span class=cl><span class=s>          set:
+</span></span></span><span class=line><span class=cl><span class=s>            x-forwarded-proto: https
+</span></span></span><span class=line><span class=cl><span class=s>      route:
+</span></span></span><span class=line><span class=cl><span class=s>        - destination:
+</span></span></span><span class=line><span class=cl><span class=s>            host: rancher.cattle-system.svc.cluster.local
+</span></span></span><span class=line><span class=cl><span class=s>            port:
+</span></span></span><span class=line><span class=cl><span class=s>              number: 80
+</span></span></span><span class=line><span class=cl><span class=s>
+</span></span></span><span class=line><span class=cl><span class=s>  # 如果是使用外部憑證的話，這邊設定可以省去或是要另外調整
+</span></span></span><span class=line><span class=cl><span class=s>  tls:
+</span></span></span><span class=line><span class=cl><span class=s>    - match:
+</span></span></span><span class=line><span class=cl><span class=s>      - port: 443
+</span></span></span><span class=line><span class=cl><span class=s>        sniHosts:
+</span></span></span><span class=line><span class=cl><span class=s>        - my-rancher.local.vm
+</span></span></span><span class=line><span class=cl><span class=s>      route:
+</span></span></span><span class=line><span class=cl><span class=s>      - destination:
+</span></span></span><span class=line><span class=cl><span class=s>          host: rancher.cattle-system.svc.cluster.local
+</span></span></span><span class=line><span class=cl><span class=s>          port:
+</span></span></span><span class=line><span class=cl><span class=s>            number: 443
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kubectl apply -f ./
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新於 2024-01-28&nbsp;<a class=git-hash href=https://github.com/YuChia-Wei/commit/1cdc17f4592038c407006524f9f7fd25588722ef target=_blank title="commit by YuChia(h42279@gmail.com) 1cdc17f4592038c407006524f9f7fd25588722ef: 加上 RKE2 安裝的文章" rel="noopener noreferrer">
+<i class="fas fa-hashtag fa-fw"></i>1cdc17f</a></span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share></div></div></div><div class=post-info-more><section class=post-tags></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://yuchia-wei.github.io/>主頁</a></span></section></div><div class=post-nav><a href=https://yuchia-wei.github.io/2023/12/2023-yearly-retrospective/ class=prev rel=prev title="2023 年度回顧"><i class="fas fa-angle-left fa-fw"></i>2023 年度回顧</a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>&nbsp;|&nbsp;&nbsp;|&nbsp;</div><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2021 - 2024</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://github.com/yuchia-wei target=_blank rel="noopener noreferrer">YuChia Wei</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div><div class=footer-line></div><div class=footer-line></div></div></footer></div><div id=fixed-buttons><a href=#back-to-top id=back-to-top-button class=fixed-button title=回到頂部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看評論><i class="fas fa-comment fa-fw"></i></a></div><div class=assets><script type=text/javascript>window.config={code:{copyTitle:"複製到剪貼板",maxShownLines:10},comment:{},data:{"desktop-header-typeit":"小佑的筆記","mobile-header-typeit":"小佑的筆記"},table:{sort:!0},typeit:{cursorChar:"|",cursorSpeed:1e3,data:{"desktop-header-typeit":["desktop-header-typeit"],"mobile-header-typeit":["mobile-header-typeit"]},duration:-1,speed:100}}</script><script type=text/javascript src=https://yuchia-wei.github.io/lib/tablesort/tablesort.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/lib/typeit/typeit.min.js></script><script type=text/javascript src=https://yuchia-wei.github.io/js/theme.min.js defer></script></div></body></html>
