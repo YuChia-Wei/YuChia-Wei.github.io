@@ -49,16 +49,16 @@
         apiVersion: networking.istio.io/v1alpha3
         kind: Gateway
         metadata:
-        name: prometheus-gateway
-        namespace: istio-system
+          name: prometheus-gateway
+          namespace: istio-system
         spec:
-        selector:
+          selector:
             istio: ingressgateway
-        servers:
-        - port:
-            number: 80
-            name: http-prom
-            protocol: HTTP
+          servers:
+          - port:
+              number: 80
+              name: http-prom
+              protocol: HTTP
             hosts:
             - "<your domain>"
         ---

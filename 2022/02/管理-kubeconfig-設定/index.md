@@ -1,4 +1,4 @@
-# Kube Config Setting
+# 管理 KubeConfig 設定
 
 
 kube-config 設定參考
@@ -6,26 +6,33 @@ kube-config 設定參考
 <!--more-->
 
 {{<admonition warning >}}
-這個做法比較 Hardcore，直接在 k8s 的管理主機上調整 kubectl 使用的 kube.config 內容，由於直接複製外部叢集的 admin.config，基於安全性問題，不建議用於正式環境上。
+這個做法會有安全性問題，理想上還是另外使用管理工具 (如 rancher) 來處理使用者資訊以及一般使用者使用的 kubeconfig
 {{</admonition >}}
 
-用 vim 開啟 kubernetes 用的設定檔
+## 取得 kubeadm 所建立的叢集的管理設定檔
 
 ```bash
-vim /etc/kubernetes/admin.conf
+cat /etc/kubernetes/admin.conf
 ```
 
-調整內容 (加入外部 k8s 叢集的相關資料)
+## 取得 suse rke2 所產生的管理設定檔
+
+```bash
+cat /etc/rancher/rke2/rke2.yaml
+```
+
+## 設定檔案結構
+
 ```yaml
 apiVersion: v1
 clusters:
 - cluster:
     certificate-authority-data: <first-cluster-cert-data>
-    server: https://<first-cluster domain>:<first-cluster port>
+    server: https://<first-cluster domain>:6443
   name: first-cluster
 - cluster:
     certificate-authority-data: <second-cluster-cert-data>
-    server: https://<second-cluster domain>:<second-cluster port>
+    server: https://<second-cluster domain>:6443
   name: second-cluster
 contexts:
 - context:
@@ -48,6 +55,5 @@ users:
   user:
     client-certificate-data: <second-cluster-admin-cert-data>
     client-key-data: <second-cluster-admin-cert-key>
-
 ```
 

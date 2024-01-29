@@ -227,7 +227,6 @@ helm install rancher rancher-stable/rancher --namespace cattle-system --set host
 ```bash
 helm install istio-ingressgateway istio/gateway -n cattle-system --wait
 
-
 sudo mkdir -p ~/istio-setting
 cat <<EOF | sudo tee ~/istio-setting/gateway.yaml
 apiVersion: networking.istio.io/v1beta1
