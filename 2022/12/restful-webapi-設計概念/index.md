@@ -11,40 +11,42 @@
 
 ## RESTful Api 所遵循的設計規則
 
-* 資源是 URL 的一部分，例如 /users
-* 每一個資源通常有兩個 URL，分別代表群體與個體
-    * 群體：GET http://{domain}/api/users
-    * 個體：GET http://{domain}/api/users/{userid}
+* 資源是 URL 的一部分，例如 `/users`
+* 每一個資源通常有兩種路由，分別代表單數與複數資料
+  * 複數：`GET http://{domain}/api/users`
+  * 單數：`GET http://{domain}/api/users/{userid}`
 * 使用資源名詞而非動詞
-    * 行為：取得使用者資料
-        * 應使用：GET {domain}/api/users/{userid}
-        * 不應：  GET {domain}/api/getUserInfo/{userid}
+  * 行為：取得使用者資料
+    * 建議：  `GET {domain}/api/users/{userid}`
+    * 不建議： `GET {domain}/api/getUserInfo/{userid}`
 * 利用 HTTP 方法表示功能行為
-    | HTTP 方法 | URL: /users                                                           | URL: /users/{userid}    |
-    |-----------|-----------------------------------------------------------------------|-------------------------|
-    | Get       | 取得所有使用者資料                                                    | 取得指定 user id 的資料 |
-    | POST      | 建立一位使用者 (資料以 Request Body 傳遞)                             | 不適用                  |
-    | PUT       | 批次更新使用者 (資料以 Request Body 傳遞、資料必須為完整的 User 資料) | 指定更新 user id 的資料 |
-    | PATCH     | 批次更新使用者 (資料以 Request Body 傳遞、資料為部分的 User 資料)     | 指定更新 user id 的資料 |
-    | DELETE    | 刪除所有使用者                                                        | 刪除指定使用者          |
+  | HTTP 方法 | URL: /users                                                           | URL: /users/{userid}    |
+  |-----------|-----------------------------------------------------------------------|-------------------------|
+  | Get       | 取得所有使用者資料                                                    | 取得指定 user id 的資料 |
+  | POST      | 建立一位使用者 (資料以 Request Body 傳遞)                             | 不適用                  |
+  | PUT       | 批次更新使用者 (資料以 Request Body 傳遞、資料必須為完整的 User 資料) | 指定更新 user id 的資料 |
+  | PATCH     | 批次更新使用者 (資料以 Request Body 傳遞、資料為部分的 User 資料)     | 指定更新 user id 的資料 |
+  | DELETE    | 刪除所有使用者                                                        | 刪除指定使用者          |
 * 伺服器回傳標準的 HTTP 狀態碼來表示處理結果
-    | 回應碼 | 執行結果                       |
-    |--------|--------------------------------|
-    | 2xx    | 成功                           |
-    | 3xx    | 資源不存在、已被移除           |
-    | 4xx    | 用戶端錯誤(缺少參數或太多請求) |
-    | 5xx    | 伺服器錯誤                     |
+  | 回應碼 | 執行結果                       |
+  |--------|--------------------------------|
+  | 2xx    | 成功                           |
+  | 3xx    | 資源不存在、已被移除           |
+  | 4xx    | 用戶端錯誤(缺少參數或太多請求) |
+  | 5xx    | 伺服器錯誤                     |
 * RESTful Api 回傳格式通常為 JSON 或 XML
 
 ## URL 資源關係
 
 URL 的路徑要可以表達每個資源的關係
 
-    GET {domain}/users/{userid}/name
-    取得          某個使用者id   的名稱
+```
+GET {domain}/users/{userid}/name
+取得          某個使用者id   的名稱
 
-    GET {domain}/unit/{unitid}/name
-    取得          某個單位id   的名稱
+GET {domain}/unit/{unitid}/name
+取得          某個單位id   的名稱
+```
 
 ## 非 CRUD 操作
 
