@@ -1,6 +1,9 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>-小佑-（&lt;ゝω·）キラbosh☆</title><link>https://yuchia-wei.github.io/</link><description>（&lt;ゝω·）キラbosh☆</description><generator>Hugo -- gohugo.io</generator><language>zh-TW</language><managingEditor>h42279@gmail.com (YuChia Wei)</managingEditor><webMaster>h42279@gmail.com (YuChia Wei)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 03 Mar 2024 22:32:00 +0800</lastBuildDate><atom:link href="https://yuchia-wei.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>功能該使用 SDK 還是 WebApi 形式提供?</title><link>https://yuchia-wei.github.io/2024/03/%E5%8A%9F%E8%83%BD%E8%A9%B2%E4%BD%BF%E7%94%A8-sdk-%E9%82%84%E6%98%AF-webapi-%E5%BD%A2%E5%BC%8F%E6%8F%90%E4%BE%9B/</link><pubDate>Sun, 03 Mar 2024 22:32:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2024/03/%E5%8A%9F%E8%83%BD%E8%A9%B2%E4%BD%BF%E7%94%A8-sdk-%E9%82%84%E6%98%AF-webapi-%E5%BD%A2%E5%BC%8F%E6%8F%90%E4%BE%9B/</guid><description><![CDATA[<p>大家在使用 dotnet 或其他可以打包成功開套件做分享的程式語言時，可能都會想到一個問題</p>
 <blockquote>
-<p>現在 WebApi 那麼盛行，我該如何抉擇要使用 Web Api 還是 套件 的形式發布我的服務呢？</p>
+<ol>
+<li>現在 WebApi 那麼盛行，我該如何抉擇要使用 Web Api 還是 套件 的形式發布我的服務、功能呢？</li>
+<li>我覺得我新寫的功能好棒棒，我想發布成 nuget package 分享給團隊，但是不確定合不合適</li>
+</ol>
 </blockquote>
 <p>這邊我簡單梳理一下一些需要考量的點~</p>]]></description></item><item><title>建立 RKE2 叢集並且安裝 Rancher / istio</title><link>https://yuchia-wei.github.io/2024/01/%E5%BB%BA%E7%AB%8B-rke2-%E5%8F%A2%E9%9B%86%E4%B8%A6%E4%B8%94%E5%AE%89%E8%A3%9D-rancher-/-istio/</link><pubDate>Sun, 28 Jan 2024 21:22:29 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2024/01/%E5%BB%BA%E7%AB%8B-rke2-%E5%8F%A2%E9%9B%86%E4%B8%A6%E4%B8%94%E5%AE%89%E8%A3%9D-rancher-/-istio/</guid><description><![CDATA[<p>我初期在公司建立地端 Kubernetes 叢集以進行 POC 時，都是使用 kubeadm 這套官方工具進行的 (我早期文章就是基於此撰寫的)。</p>
 <p>但是當需要將 Kubernetes 拓展到其他單位時，那相對複雜的安裝與管理方式卻是第一個難以躍過的門檻。</p>
