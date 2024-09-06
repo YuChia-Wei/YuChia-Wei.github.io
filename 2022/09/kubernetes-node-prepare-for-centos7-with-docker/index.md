@@ -433,7 +433,7 @@ export KUBECONFIG=/etc/kubernetes/admin.conf
 | Used For                          | Subnet        | Genmask     | Start      | End            |
 | --------------------------------- | ------------- | ----------- | ---------- | -------------- |
 | Kubernetes Pod Subnet (Weave-cni) | 10.32.0.0/12  | 255.240.0.0 | 10.32.0.1  | 10.47.255.254  |
-| Kubernetes Service Subnet         | 10.96.0.0/12  | 255.240.0.0 | 10.96.0.1  | 10.111.255.254 |
+| Kubernetes Service Subnet         | 10.105.0.0/12  | 255.240.0.0 | 10.105.0.1  | 10.111.255.254 |
 | Docker (default bridge)           | 172.17.0.0/16 | 255.255.0.0 | 172.17.0.1 | 172.17.255.254 |
 | Docker (custom bridge)            | 172.18.0.0/16 | 255.255.0.0 | 172.18.0.1 | 172.18.255.254 |
 
