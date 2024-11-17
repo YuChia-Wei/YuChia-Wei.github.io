@@ -517,3 +517,7 @@ public class ExceptionWrappingFilter : IExceptionFilter
 
 例如，在 dotnet 9 之後我們可以利用 `Activity.Current?.AddException(context.Exception);` 來主動寫入例外事件，但如果系統本來就有使用 OpenTelemetry 的 sql client 、 http client 等追蹤套件的話，由於他們本來就會在 client 發生例外時紀錄例外事件，這就會造成重複寫入的問題。
 
+{{<admonition info >}}
+`Activity.Current?.AddException(context.Exception);` 這個方法是 `System.Diagnostics.DiagnosticSource` 這個套件在 9.0.0 版後新增的，且有 \.NetStandard 2.0 版本，所以就算沒有升級到 dotnet 9 也是可以用的喔~
+{{</admonition >}}
+
