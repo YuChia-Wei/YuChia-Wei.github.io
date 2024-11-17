@@ -10,7 +10,7 @@
 文章預計會分為四個部分，分別為
 
 - Part 1 : 包裝 api 回應
-- Part 2 : 處理例外內容
+- Part 2 : 包裝例外
 - Part 3 : 其他包裝方法與適用情境
 - Part 4 : 幫自動化產生的 Swagger Example / Schema 也加上 api response 的內容
 

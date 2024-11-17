@@ -1,4 +1,11 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>幫 AspNetCore WebApi 包上自己的 response model - 系列 - -小佑-（&lt;ゝω·）キラbosh☆</title><link>https://yuchia-wei.github.io/series/aspnetcore-webapi-custom-response-model/</link><description>幫 AspNetCore WebApi 包上自己的 response model - 系列 - -小佑-（&lt;ゝω·）キラbosh☆</description><generator>Hugo -- gohugo.io</generator><language>zh-TW</language><managingEditor>h42279@gmail.com (YuChia Wei)</managingEditor><webMaster>h42279@gmail.com (YuChia Wei)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://yuchia-wei.github.io/series/aspnetcore-webapi-custom-response-model/" rel="self" type="application/rss+xml"/><item><title>幫 AspNetCore WebApi 包上自己的 response model，Part 1 : 包裝 api 回應</title><link>https://yuchia-wei.github.io/2024/10/aspnetcore-webapi-custom-response-model-part1-wrapping-api-response/</link><pubDate>Sat, 12 Oct 2024 00:00:00 +0800</pubDate><author><name>YuChia Wei</name></author><guid>https://yuchia-wei.github.io/2024/10/aspnetcore-webapi-custom-response-model-part1-wrapping-api-response/</guid><description><![CDATA[<p>在設計 web api 時，通常會想要有一個自己系統專用的標準化回應格式，我在前一份工作中因為已經有底層的前輩建立好相關的處理套件，所以一直以來都沒特別研究怎麼包裝以及自訂回應欄位。
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>幫 AspNetCore WebApi 包上自己的 response model - 系列 - -小佑-（&lt;ゝω·）キラbosh☆</title><link>https://yuchia-wei.github.io/series/aspnetcore-webapi-custom-response-model/</link><description>幫 AspNetCore WebApi 包上自己的 response model - 系列 - -小佑-（&lt;ゝω·）キラbosh☆</description><generator>Hugo -- gohugo.io</generator><language>zh-TW</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://yuchia-wei.github.io/series/aspnetcore-webapi-custom-response-model/" rel="self" type="application/rss+xml"/><item><title>幫 AspNetCore WebApi 包上自己的 response model，Part 2 : 包裝例外</title><link>https://yuchia-wei.github.io/2024/11/aspnetcore-webapi-custom-response-model-part2-wrapping-exception/</link><pubDate>Sun, 17 Nov 2024 11:30:00 +0800</pubDate><author><name>作者</name></author><guid>https://yuchia-wei.github.io/2024/11/aspnetcore-webapi-custom-response-model-part2-wrapping-exception/</guid><description><![CDATA[<p>這篇為 「幫 AspNetCore WebApi 包上自己的 response model」 的第二部分 「包裝例外」。
+</br></p>
+<p>我將介紹如何在 ASP.NET Core Web API 中統一處理例外狀況，並將其包裝成標準化的回應格式。</p>
+<p>我會介紹以下兩種例外資料的包裝方法：</p>
+<ol>
+<li>使用 UseExceptionHandler Middleware</li>
+<li>使用 IExceptionFilter 介面</li>
+</ol>]]></description></item><item><title>幫 AspNetCore WebApi 包上自己的 response model，Part 1 : 包裝 api 回應</title><link>https://yuchia-wei.github.io/2024/10/aspnetcore-webapi-custom-response-model-part1-wrapping-api-response/</link><pubDate>Sat, 12 Oct 2024 00:00:00 +0800</pubDate><author><name>作者</name></author><guid>https://yuchia-wei.github.io/2024/10/aspnetcore-webapi-custom-response-model-part1-wrapping-api-response/</guid><description><![CDATA[<p>在設計 web api 時，通常會想要有一個自己系統專用的標準化回應格式，我在前一份工作中因為已經有底層的前輩建立好相關的處理套件，所以一直以來都沒特別研究怎麼包裝以及自訂回應欄位。
 </br>
 </br>
 最近在自己的練習專案中嘗試去實作相關機制，才發現原來要考慮的東西有點多，這邊我就來分享一下我的做法以及其他可以用的方式與用途。
@@ -7,7 +14,7 @@
 文章預計會分為四個部分，分別為</p>
 <ul>
 <li>Part 1 : 包裝 api 回應</li>
-<li>Part 2 : 處理例外內容</li>
+<li>Part 2 : 包裝例外</li>
 <li>Part 3 : 其他包裝方法與適用情境</li>
 <li>Part 4 : 幫自動化產生的 Swagger Example / Schema 也加上 api response 的內容</li>
 </ul>
