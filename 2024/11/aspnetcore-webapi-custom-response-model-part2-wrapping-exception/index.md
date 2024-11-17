@@ -478,6 +478,21 @@ public class ExceptionWrappingFilter : IExceptionFilter
 }
 ```
 
+#### 套用 Exception Filter
+
+Exception Filter 建立完畢後，與所有 Action Filter 相同，也需要在 program.cs 中設定一下，在 AccControllers 中加入設定
+
+```csharp
+builder.Services.AddControllers(options =>
+{
+    // 加入 api response wrapping 的 result filter
+    options.Filters.Add<ApiResponseWrappingFilter>();
+    // 加入自己定義的例外包裝
+    options.Filters.Add<ExceptionWrappingFilter>();
+});
+
+```
+
 ### ExceptionFilter 中的設定如何影響例外傳遞
 
 #### ExceptionHandled 屬性
