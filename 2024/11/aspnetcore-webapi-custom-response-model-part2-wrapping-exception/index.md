@@ -14,9 +14,7 @@
 <!--more-->
 
 {{<admonition info >}}
-以下內容使用 dotnet 8 的 AspNetCore WebApi 進行測試與開發，相關範例程式碼可以在我的 [github repo](https://github.com/YuChia-Wei/dotnet-webapi-lab) 找到，但是這個 repo 包含了我許多練習用的程式碼，可能會有點混亂，還請海涵
-</br>
-預計在近期會進行 dotnet 9 的版本更新，到時候會再更新相關的程式碼，並且會將 repo 中的程式碼進行整理。
+以下內容使用 dotnet 9 的 AspNetCore WebApi 進行測試與開發，相關範例程式碼可以在我的 [github repo](https://github.com/YuChia-Wei/dotnet-webapi-lab) 找到
 {{</admonition >}}
 
 ## AspNetCore WebApi 的例外處理
@@ -26,7 +24,7 @@
 在微軟的 ActionFilter 系列的介面中，有一個介面叫做 `IExceptionFilter`，這一個 ActionFilter 就是專職處理例外的工具，我們只要實作這個介面就可以建立一個專門處理 api 內部出現例外時該怎麼回應的 ActionFilter。
 
 {{<admonition info >}}
-Filter 類別的執行順序可以查閱 [MS Learn](https://learn.microsoft.com/zh-tw/aspnet/core/mvc/controllers/filters?view=aspnetcore-8.0) ，這邊不另外說明。
+Filter 類別的執行順序可以查閱 [MS Learn](https://learn.microsoft.com/zh-tw/aspnet/core/mvc/controllers/filters?view=aspnetcore-9.0) ，這邊不另外說明。
 {{</admonition >}}
 
 不過，在開始之前我想先介紹另外一個較為暴力的例外處理機制 `UseExceptionHandler` 這個 middleware，並且利用這個 middleware 包裝例外回應資料。
@@ -35,9 +33,9 @@ Filter 類別的執行順序可以查閱 [MS Learn](https://learn.microsoft.com/
 
 UseExceptionHandler 這個 middleware 是在 dotnet 8 才開始支援的 middleware，這個 middleware 可以捕捉系統內的所有例外，並且自訂例外處理的行為，所以，自然也可以利用這個 middleware 來包裝回應資料。
 
-關於其他自訂 UseExceptionHandler 這個 middleware 的細節可以在微軟的 [MS Learn - ASP.NET Core 錯誤處理](https://learn.microsoft.com/zh-tw/aspnet/core/fundamentals/error-handling?view=aspnetcore-8.0) 中可以查閱。
+關於其他自訂 UseExceptionHandler 這個 middleware 的細節可以在微軟的 [MS Learn - ASP.NET Core 錯誤處理](https://learn.microsoft.com/zh-tw/aspnet/core/fundamentals/error-handling?view=aspnetcore-9.0) 中可以查閱。
 
-我這邊要用的方式是比較簡單的在 UserExceptionHandler 中直接用 lambda 設定處理方法，其他詳細說明可以參閱 [微軟官方說明連結](https://learn.microsoft.com/zh-tw/aspnet/core/fundamentals/error-handling?view=aspnetcore-8.0#exception-handler-lambda)。
+我這邊要用的方式是比較簡單的在 UserExceptionHandler 中直接用 lambda 設定處理方法，其他詳細說明可以參閱 [微軟官方說明連結](https://learn.microsoft.com/zh-tw/aspnet/core/fundamentals/error-handling?view=aspnetcore-9.0#exception-handler-lambda)。
 
 #### 取得例外資訊
 
@@ -335,7 +333,7 @@ public class ExceptionWrappingFilter : IExceptionFilter
 
 #### 例外資訊的安全性考量
 
-在 AspNetCore 中，可以利用 `IHostEnvironment.IsDevelopment()` 或 `IHostEnvironment.IsProduction()` 等方法來得知目前系統的運行環境，也就是在 UseExceptionHandler 中也有用到的 `app.Environment.IsProduction()`。
+在 AspNetCore 中，可以利用 `IHostEnvironment.IsDevelopment()` 或 `IHostEnvironment.IsProduction()` 等方法來得知目前系統的運行環境，也就是在 `UseExceptionHandler` 中也有用到的 `app.Environment.IsProduction()`。
 
 另外，也可以直接使用 `Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");` 這個靜態方法來取得系統運作時使用的環境資訊。
 

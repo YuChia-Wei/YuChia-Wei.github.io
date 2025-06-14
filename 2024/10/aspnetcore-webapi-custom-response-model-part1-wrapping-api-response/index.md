@@ -20,7 +20,7 @@
 <!--more-->
 
 {{<admonition info >}}
-以下內容使用 dotnet 8 的 AspNetCore WebApi 進行測試與開發，相關範例程式碼可以在我的 [github repo](https://github.com/YuChia-Wei/dotnet-webapi-lab) 找到，但是這個 repo 包含了我許多練習用的程式碼，可能會有點混亂，還請海涵
+以下內容使用 dotnet 9 的 AspNetCore WebApi 進行測試與開發，相關範例程式碼可以在我的 [github repo](https://github.com/YuChia-Wei/dotnet-webapi-lab) 找到
 {{</admonition >}}
 
 ## 定義回應物件
@@ -459,7 +459,7 @@ public class ApiResponseWrappingFilter : IResultFilter
     在結果已經處理完，回應即將發送給客戶端之後執行。
     這個方法主要用於在結果已經準備發送給客戶端後做一些清理操作或記錄日誌。
 
-詳細資料可以參考 [MS Learn](https://learn.microsoft.com/zh-tw/aspnet/core/mvc/controllers/filters?view=aspnetcore-8.0)
+詳細資料可以參考 [MS Learn](https://learn.microsoft.com/zh-tw/aspnet/core/mvc/controllers/filters?view=aspnetcore-9.0)
 
 ## 為 Controller 加上 IResultFilter
 
