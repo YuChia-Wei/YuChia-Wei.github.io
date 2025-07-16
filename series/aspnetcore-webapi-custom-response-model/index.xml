@@ -1,4 +1,17 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>幫 AspNetCore WebApi 包上自己的 response model on -小佑-（&lt;ゝω·）キラbosh☆</title><link>https://yuchia-wei.github.io/series/aspnetcore-webapi-custom-response-model/</link><description>Recent content in 幫 AspNetCore WebApi 包上自己的 response model on -小佑-（&lt;ゝω·）キラbosh☆</description><generator>Hugo</generator><language>zh-TW</language><lastBuildDate>Sun, 15 Jun 2025 10:28:00 +0800</lastBuildDate><atom:link href="https://yuchia-wei.github.io/series/aspnetcore-webapi-custom-response-model/index.xml" rel="self" type="application/rss+xml"/><item><title>幫 AspNetCore WebApi 包上自己的 response model，Part 2 : 包裝例外</title><link>https://yuchia-wei.github.io/2024/11/aspnetcore-webapi-custom-response-model-part2-wrapping-exception/</link><pubDate>Sun, 17 Nov 2024 11:30:00 +0800</pubDate><guid>https://yuchia-wei.github.io/2024/11/aspnetcore-webapi-custom-response-model-part2-wrapping-exception/</guid><description>&lt;p>這篇為 「幫 AspNetCore WebApi 包上自己的 response model」 的第二部分 「包裝例外」。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>幫 AspNetCore WebApi 包上自己的 response model on -小佑-（&lt;ゝω·）キラbosh☆</title><link>https://yuchia-wei.github.io/series/aspnetcore-webapi-custom-response-model/</link><description>Recent content in 幫 AspNetCore WebApi 包上自己的 response model on -小佑-（&lt;ゝω·）キラbosh☆</description><generator>Hugo</generator><language>zh-TW</language><lastBuildDate>Wed, 16 Jul 2025 11:22:00 +0800</lastBuildDate><atom:link href="https://yuchia-wei.github.io/series/aspnetcore-webapi-custom-response-model/index.xml" rel="self" type="application/rss+xml"/><item><title>幫 AspNetCore WebApi 包上自己的 response model，Part 3 : 其他包裝方法</title><link>https://yuchia-wei.github.io/2025/07/aspnetcore-webapi-custom-response-model-part3-wrapping-api-response-the-other-way/</link><pubDate>Wed, 16 Jul 2025 11:22:00 +0800</pubDate><guid>https://yuchia-wei.github.io/2025/07/aspnetcore-webapi-custom-response-model-part3-wrapping-api-response-the-other-way/</guid><description>&lt;p>先前在撰寫 wrapping response action filter 的時候其實有利用 ChatGPT 進行輔助，在與 ChatGPT 對話的過程中也有討論到使用 Middleware 處理回應包裝的部分，我想利用這一篇記錄一下當時的對話內容以及結論。
+&lt;/br>
+&lt;/br>
+因此，本文大部分內容都是由 AI 產出，我再進行整理與調整。
+&lt;/br>
+&lt;/br>
+&lt;div class="details admonition warning open">
+ &lt;div class="details-summary admonition-title">
+ &lt;span class="icon">&lt;svg class="icon"
+ xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">&lt;!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) -->&lt;path d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"/>&lt;/svg>&lt;/span>警告&lt;span class="details-icon">&lt;svg class="icon"
+ xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">&lt;!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) -->&lt;path d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"/>&lt;/svg>&lt;/span>
+ &lt;/div>
+ &lt;div class="details-content">
+ &lt;div class="admonition-content">本文中所使用的方式我並沒有在正式環境中使用，僅是因為在先前與 ChatGPT 討論的過程中有針對這種做法進行討論，然後覺得這段適合保留下來而有這一篇文章。&lt;/div>&lt;/div>&lt;/div>&lt;/p></description></item><item><title>幫 AspNetCore WebApi 包上自己的 response model，Part 2 : 包裝例外</title><link>https://yuchia-wei.github.io/2024/11/aspnetcore-webapi-custom-response-model-part2-wrapping-exception/</link><pubDate>Sun, 17 Nov 2024 11:30:00 +0800</pubDate><guid>https://yuchia-wei.github.io/2024/11/aspnetcore-webapi-custom-response-model-part2-wrapping-exception/</guid><description>&lt;p>這篇為 「幫 AspNetCore WebApi 包上自己的 response model」 的第二部分 「包裝例外」。
 &lt;/br>&lt;/p>
 &lt;p>我將介紹如何在 ASP.NET Core Web API 中統一處理例外狀況，並將其包裝成標準化的回應格式。&lt;/p>
 &lt;p>我會介紹以下兩種例外資料的包裝方法：&lt;/p>
@@ -10,13 +23,4 @@
 &lt;/br>
 最近在自己的練習專案中嘗試去實作相關機制，才發現原來要考慮的東西有點多，這邊我就來分享一下我的做法以及其他可以用的方式與用途。
 &lt;/br>
-&lt;/br>
-文章預計會分為四個部分，分別為&lt;/p>
-&lt;ul>
-&lt;li>Part 1 : 包裝 api 回應&lt;/li>
-&lt;li>Part 2 : 包裝例外&lt;/li>
-&lt;li>Part 3 : 其他包裝方法與適用情境&lt;/li>
-&lt;li>Part 4 : 幫自動化產生的 Swagger Example / Schema 也加上 api response 的內容&lt;/li>
-&lt;/ul>
-&lt;/br>
-這篇是第一部分 「包裝 api 回應」 後續其他部分我會努力趕工!!</description></item></channel></rss>
+&lt;/br>&lt;/p></description></item></channel></rss>
